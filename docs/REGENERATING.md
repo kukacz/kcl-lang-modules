@@ -86,7 +86,8 @@ scripts/regenerate-operator cert-manager/cert-manager v1.16.1 deploy/crds cert-m
    (e.g. `generators.external-secrets.io` → `generators_external_secrets_io`).
 5. Deletes auto-generated `k8s/` sub-folders and inner `kcl.mod` files
    that `kcl import` leaves behind — every module in this repo shares
-   one top-level `kcl.mod`.
+   one top-level `kcl.mod`. Also deletes the template `main.k` written
+   by `kcl mod init`.
 6. Collapses acronym splits in filenames. `kcl import` produces names
    like `m_f_a.k` for `MFA`, `s_s_h_key.k` for `SSHKey`, etc. The
    trailing Python post-pass glues runs of single-character segments

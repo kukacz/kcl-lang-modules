@@ -108,7 +108,12 @@ for group in "${groups[@]}"; do
 done
 
 # ── 6. Cleanup auto-generated sub-module files ─────────────────────────────────
-find . '(' -path './*/**k8s**' -o -path './*/**kcl.mod' ')' -delete
+# Match the k8s/ dir by name only: a path glob like '*k8s*' would also
+# delete API group packages such as cluster_x_k8s_io/.
+find . -mindepth 2 -maxdepth 2 '(' -type d -name k8s -o -type f -name kcl.mod ')' \
+    -exec rm -rf {} +
+# kcl mod init writes a template main.k that no module in this repo uses
+rm -f main.k
 
 # ── 7. Fix acronym splitting in filenames ──────────────────────────────────────
 # kcl import splits uppercase acronyms letter-by-letter:
