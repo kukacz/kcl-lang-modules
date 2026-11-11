@@ -77,6 +77,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpec:
         - GermanCloud: "AzureGermanCloud"
         - PublicCloud: "AzurePublicCloud"
         - USGovernmentCloud: "AzureUSGovernmentCloud"
+        - USSecCloud: "AzureUSSecCloud"
 
         Note that values other than the default must also be accompanied by corresponding changes to the
         aso-controller-settings Secret to configure ASO to refer to the non-Public cloud. ASO currently does
@@ -87,6 +88,10 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpec:
         - AZURE_RESOURCE_MANAGER_AUDIENCE
 
         See the [ASO docs] for more details.
+
+        When set to "AzureUSSecCloud", the AZURE_ENVIRONMENT_FILEPATH environment
+        variable must be set on the controller, pointing to a JSON file containing
+        the dynamically-discovered cloud endpoints for the air-gapped environment.
 
         [ASO docs]: https://azure.github.io/azure-service-operator/guide/aso-controller-settings-options/
     bastionSpec : InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecBastionSpec, default is Undefined, optional
@@ -309,7 +314,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecBas
     ----------
     action : str, default is "Allow", optional
         Action specifies whether network traffic is allowed or denied. Can either be "Allow" or "Deny". Defaults to "Allow".
-    description : str, default is Undefined, required
+    description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 chars.
     destination : str, default is Undefined, optional
         Destination is the destination address prefix. CIDR or destination IP range. Asterix '*' can also be used to match all source IPs. Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used.
@@ -334,7 +339,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecBas
 
     action?: "Allow" | "Deny" = "Allow"
 
-    description: str
+    description?: str
 
     destination?: str
 
@@ -353,6 +358,10 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecBas
     sourcePorts?: str
 
     sources?: [str]
+
+
+    check:
+        len(description) <= 140 if description not in [None, Undefined]
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecBastionSpecAzureBastionSubnetServiceEndpointsItems0:
@@ -852,7 +861,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecNet
     ----------
     action : str, default is "Allow", optional
         Action specifies whether network traffic is allowed or denied. Can either be "Allow" or "Deny". Defaults to "Allow".
-    description : str, default is Undefined, required
+    description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 chars.
     destination : str, default is Undefined, optional
         Destination is the destination address prefix. CIDR or destination IP range. Asterix '*' can also be used to match all source IPs. Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used.
@@ -877,7 +886,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecNet
 
     action?: "Allow" | "Deny" = "Allow"
 
-    description: str
+    description?: str
 
     destination?: str
 
@@ -896,6 +905,10 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecNet
     sourcePorts?: str
 
     sources?: [str]
+
+
+    check:
+        len(description) <= 140 if description not in [None, Undefined]
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterTemplateSpecTemplateSpecNetworkSpecSubnetsItems0ServiceEndpointsItems0:

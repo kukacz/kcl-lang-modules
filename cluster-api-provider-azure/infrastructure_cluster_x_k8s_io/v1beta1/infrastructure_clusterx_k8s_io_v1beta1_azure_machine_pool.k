@@ -215,6 +215,12 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplate:
         DataDisks specifies the list of data disks to be created for a Virtual Machine
     diagnostics : InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplateDiagnostics, default is Undefined, optional
         diagnostics
+    disableVMBootstrapExtension : bool, default is Undefined, optional
+        DisableVMBootstrapExtension specifies whether the VM bootstrap extension should be disabled on the virtual machine scale set.
+        Use this setting if you want to disable only the bootstrapping extension and not all extensions.
+        If unset, CAPZ treats this as true during reconciliation, meaning the bootstrap extension is not installed on new VMSSes.
+        Set to false to opt back in to the bootstrap extension. Changing this field on an existing AzureMachinePool only takes
+        effect on the next model-changing update of the underlying VMSS (e.g. image, identity, zones, or SKU change).
     image : InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplateImage, default is Undefined, optional
         image
     networkInterfaces : [InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplateNetworkInterfacesItems0], default is Undefined, optional
@@ -251,6 +257,8 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplate:
     dataDisks?: [InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplateDataDisksItems0]
 
     diagnostics?: InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplateDiagnostics
+
+    disableVMBootstrapExtension?: bool
 
     image?: InfrastructureClusterxK8sIoV1beta1AzureMachinePoolSpecTemplateImage
 
@@ -985,6 +993,11 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachinePoolStatus:
         InfrastructureMachineKind is the kind of the infrastructure resources behind MachinePool Machines.
     instances : [InfrastructureClusterxK8sIoV1beta1AzureMachinePoolStatusInstancesItems0], default is Undefined, optional
         Instances is the VM instance status for each VM in the VMSS
+    lastReconciledReplicas : int, default is Undefined, optional
+        LastReconciledReplicas is the desired replica count that was most recently reconciled onto the
+        VMSS. It is used to tell an explicit scale-down (the desired count dropped below this value)
+        apart from a rollout, where the desired count is unchanged and the extra instances come from
+        surge capacity. Those two states are otherwise indistinguishable from the instance list alone.
     longRunningOperationStates : [InfrastructureClusterxK8sIoV1beta1AzureMachinePoolStatusLongRunningOperationStatesItems0], default is Undefined, optional
         LongRunningOperationStates saves the state for Azure long-running operations so they can be continued on the
         next reconciliation loop.
@@ -1010,6 +1023,8 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachinePoolStatus:
     infrastructureMachineKind?: str
 
     instances?: [InfrastructureClusterxK8sIoV1beta1AzureMachinePoolStatusInstancesItems0]
+
+    lastReconciledReplicas?: int
 
     longRunningOperationStates?: [InfrastructureClusterxK8sIoV1beta1AzureMachinePoolStatusLongRunningOperationStatesItems0]
 

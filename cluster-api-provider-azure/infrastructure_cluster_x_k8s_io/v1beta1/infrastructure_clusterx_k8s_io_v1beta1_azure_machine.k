@@ -71,6 +71,8 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachineSpec:
     disableVMBootstrapExtension : bool, default is Undefined, optional
         DisableVMBootstrapExtension specifies whether the VM bootstrap extension should be disabled on the virtual machine.
         Use this setting if you want to disable only the bootstrapping extension and not all extensions.
+        If unset, CAPZ treats this as true during reconciliation, meaning the bootstrap extension is not installed on new VMs.
+        Set to false to opt back in to the bootstrap extension.
     dnsServers : [str], default is Undefined, optional
         DNSServers adds a list of DNS Server IP addresses to the VM NICs.
     enableIPForwarding : bool, default is Undefined, optional
@@ -115,6 +117,13 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachineSpec:
         The lifecycle of a user-assigned identity is managed separately from the lifecycle of
         the AzureMachine.
         See https://learn.microsoft.com/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-cli
+    virtualMachineScaleSetID : str, default is Undefined, optional
+        VirtualMachineScaleSetID specifies the VMSS Flex resource id that the virtual machine should be
+        created in.
+        The field input must be a valid Azure resource ID for a Virtual Machine Scale Set resource, for example
+        '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmssName}'.
+        The referenced Virtual Machine Scale Set must already exist and use Flexible orchestration mode.
+        It is optional but may not be changed once set.
     vmExtensions : [InfrastructureClusterxK8sIoV1beta1AzureMachineSpecVMExtensionsItems0], default is Undefined, optional
         VMExtensions specifies a list of extensions to be added to the virtual machine.
     vmSize : str, default is Undefined, required
@@ -169,6 +178,8 @@ schema InfrastructureClusterxK8sIoV1beta1AzureMachineSpec:
     systemAssignedIdentityRole?: InfrastructureClusterxK8sIoV1beta1AzureMachineSpecSystemAssignedIdentityRole
 
     userAssignedIdentities?: [InfrastructureClusterxK8sIoV1beta1AzureMachineSpecUserAssignedIdentitiesItems0]
+
+    virtualMachineScaleSetID?: str
 
     vmExtensions?: [InfrastructureClusterxK8sIoV1beta1AzureMachineSpecVMExtensionsItems0]
 

@@ -53,6 +53,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpec:
         - GermanCloud: "AzureGermanCloud"
         - PublicCloud: "AzurePublicCloud"
         - USGovernmentCloud: "AzureUSGovernmentCloud"
+        - USSecCloud: "AzureUSSecCloud"
 
         Note that values other than the default must also be accompanied by corresponding changes to the
         aso-controller-settings Secret to configure ASO to refer to the non-Public cloud. ASO currently does
@@ -63,6 +64,10 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpec:
         - AZURE_RESOURCE_MANAGER_AUDIENCE
 
         See the [ASO docs] for more details.
+
+        When set to "AzureUSSecCloud", the AZURE_ENVIRONMENT_FILEPATH environment
+        variable must be set on the controller, pointing to a JSON file containing
+        the dynamically-discovered cloud endpoints for the air-gapped environment.
 
         [ASO docs]: https://azure.github.io/azure-service-operator/guide/aso-controller-settings-options/
     bastionSpec : InfrastructureClusterxK8sIoV1beta1AzureClusterSpecBastionSpec, default is Undefined, optional
@@ -443,7 +448,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecBastionSpecAzureBastion
     ----------
     action : str, default is "Allow", optional
         Action specifies whether network traffic is allowed or denied. Can either be "Allow" or "Deny". Defaults to "Allow".
-    description : str, default is Undefined, required
+    description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 chars.
     destination : str, default is Undefined, optional
         Destination is the destination address prefix. CIDR or destination IP range. Asterix '*' can also be used to match all source IPs. Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used.
@@ -468,7 +473,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecBastionSpecAzureBastion
 
     action?: "Allow" | "Deny" = "Allow"
 
-    description: str
+    description?: str
 
     destination?: str
 
@@ -487,6 +492,10 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecBastionSpecAzureBastion
     sourcePorts?: str
 
     sources?: [str]
+
+
+    check:
+        len(description) <= 140 if description not in [None, Undefined]
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecBastionSpecAzureBastionSubnetServiceEndpointsItems0:
@@ -786,6 +795,11 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLB:
 
     Attributes
     ----------
+    availabilityZones : [str], default is Undefined, optional
+        AvailabilityZones is a list of availability zones for the load balancer.
+        When specified for an internal load balancer, the frontend IP configuration
+        will be zone-redundant across the specified zones.
+        For public load balancers, this should be set on the associated public IP addresses instead.
     backendPool : InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBBackendPool, default is Undefined, optional
         backend pool
     frontendIPs : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBFrontendIPsItems0], default is Undefined, optional
@@ -799,12 +813,17 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLB:
         IdleTimeoutInMinutes specifies the timeout for the TCP idle connection.
     name : str, default is Undefined, optional
         name
+    privateLinks : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBPrivateLinksItems0], default is Undefined, optional
+        PrivateLinks to the load balancer (max 8 private links).
+        Only supported on the API server load balancer.
     sku : str, default is Undefined, optional
         SKU defines an Azure load balancer SKU.
     $type : str, default is Undefined, optional
         LBType defines an Azure load balancer Type.
     """
 
+
+    availabilityZones?: [str]
 
     backendPool?: InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBBackendPool
 
@@ -818,9 +837,17 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLB:
 
     name?: str
 
+    privateLinks?: [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBPrivateLinksItems0]
+
     sku?: str
 
     $type?: str
+
+
+    check:
+        len(availabilityZones) <= 3 if availabilityZones
+        all i in availabilityZones { _regex_match(str(i), r"^[1-3]$") if i } if availabilityZones
+        len(privateLinks) <= 8 if privateLinks
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBBackendPool:
@@ -904,6 +931,71 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBF
     $type: str
 
 
+schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBPrivateLinksItems0:
+    r"""
+    PrivateLink configures an Azure private link.
+
+    Attributes
+    ----------
+    allowedSubscriptions : [str], default is Undefined, optional
+        AllowedSubscriptions is a list of subscriptions from which the private link can be accessed.
+    autoApprovedSubscriptions : [str], default is Undefined, optional
+        AutoApprovedSubscriptions is a list of subscription for which the connections to private link are automatically
+        approved.
+    enableProxyProtocol : bool, default is Undefined, optional
+        EnableProxyProtocol indicates whether the private link service is enabled for proxy protocol or not.
+    lbFrontendIPConfigNames : [str], default is Undefined, required
+        LBFrontendIPConfigNames are the names of the load balancer FrontendIP to which the private link will forward
+        requests. The specified frontend IP configs must have the private IP set.
+    name : str, default is Undefined, required
+        Name of the private link.
+    natIPConfigurations : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBPrivateLinksItems0NatIPConfigurationsItems0], default is Undefined, required
+        NATIPConfigurations specify up to 8 NAT IP configurations for the private link.
+    """
+
+
+    allowedSubscriptions?: [str]
+
+    autoApprovedSubscriptions?: [str]
+
+    enableProxyProtocol?: bool
+
+    lbFrontendIPConfigNames: [str]
+
+    name: str
+
+    natIPConfigurations: [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBPrivateLinksItems0NatIPConfigurationsItems0]
+
+
+    check:
+        len(lbFrontendIPConfigNames) >= 1
+        len(name) >= 1
+        len(natIPConfigurations) >= 1
+        len(natIPConfigurations) <= 8
+
+
+schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAPIServerLBPrivateLinksItems0NatIPConfigurationsItems0:
+    r"""
+    PrivateLinkNATIPConfiguration specifies NAT IP configuration for the private link.
+
+    Attributes
+    ----------
+    allocationMethod : str, default is Undefined, required
+        AllocationMethod specifies how the private link NAT IPs are allocated: "Static" or "Dynamic".
+    privateIPAddress : str, default is Undefined, optional
+        private IP address
+    subnet : str, default is Undefined, required
+        Subnet from which the IP is allocated.
+    """
+
+
+    allocationMethod: "Static" | "Dynamic"
+
+    privateIPAddress?: str
+
+    subnet: str
+
+
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecAdditionalAPIServerLBPortsItems0:
     r"""
     LoadBalancerPort specifies additional port for the API server load balancer.
@@ -929,6 +1021,11 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlane
 
     Attributes
     ----------
+    availabilityZones : [str], default is Undefined, optional
+        AvailabilityZones is a list of availability zones for the load balancer.
+        When specified for an internal load balancer, the frontend IP configuration
+        will be zone-redundant across the specified zones.
+        For public load balancers, this should be set on the associated public IP addresses instead.
     backendPool : InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBBackendPool, default is Undefined, optional
         backend pool
     frontendIPs : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBFrontendIPsItems0], default is Undefined, optional
@@ -942,12 +1039,17 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlane
         IdleTimeoutInMinutes specifies the timeout for the TCP idle connection.
     name : str, default is Undefined, optional
         name
+    privateLinks : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBPrivateLinksItems0], default is Undefined, optional
+        PrivateLinks to the load balancer (max 8 private links).
+        Only supported on the API server load balancer.
     sku : str, default is Undefined, optional
         SKU defines an Azure load balancer SKU.
     $type : str, default is Undefined, optional
         LBType defines an Azure load balancer Type.
     """
 
+
+    availabilityZones?: [str]
 
     backendPool?: InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBBackendPool
 
@@ -961,9 +1063,17 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlane
 
     name?: str
 
+    privateLinks?: [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBPrivateLinksItems0]
+
     sku?: str
 
     $type?: str
+
+
+    check:
+        len(availabilityZones) <= 3 if availabilityZones
+        all i in availabilityZones { _regex_match(str(i), r"^[1-3]$") if i } if availabilityZones
+        len(privateLinks) <= 8 if privateLinks
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBBackendPool:
@@ -1047,12 +1157,82 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlane
     $type: str
 
 
+schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBPrivateLinksItems0:
+    r"""
+    PrivateLink configures an Azure private link.
+
+    Attributes
+    ----------
+    allowedSubscriptions : [str], default is Undefined, optional
+        AllowedSubscriptions is a list of subscriptions from which the private link can be accessed.
+    autoApprovedSubscriptions : [str], default is Undefined, optional
+        AutoApprovedSubscriptions is a list of subscription for which the connections to private link are automatically
+        approved.
+    enableProxyProtocol : bool, default is Undefined, optional
+        EnableProxyProtocol indicates whether the private link service is enabled for proxy protocol or not.
+    lbFrontendIPConfigNames : [str], default is Undefined, required
+        LBFrontendIPConfigNames are the names of the load balancer FrontendIP to which the private link will forward
+        requests. The specified frontend IP configs must have the private IP set.
+    name : str, default is Undefined, required
+        Name of the private link.
+    natIPConfigurations : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBPrivateLinksItems0NatIPConfigurationsItems0], default is Undefined, required
+        NATIPConfigurations specify up to 8 NAT IP configurations for the private link.
+    """
+
+
+    allowedSubscriptions?: [str]
+
+    autoApprovedSubscriptions?: [str]
+
+    enableProxyProtocol?: bool
+
+    lbFrontendIPConfigNames: [str]
+
+    name: str
+
+    natIPConfigurations: [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBPrivateLinksItems0NatIPConfigurationsItems0]
+
+
+    check:
+        len(lbFrontendIPConfigNames) >= 1
+        len(name) >= 1
+        len(natIPConfigurations) >= 1
+        len(natIPConfigurations) <= 8
+
+
+schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecControlPlaneOutboundLBPrivateLinksItems0NatIPConfigurationsItems0:
+    r"""
+    PrivateLinkNATIPConfiguration specifies NAT IP configuration for the private link.
+
+    Attributes
+    ----------
+    allocationMethod : str, default is Undefined, required
+        AllocationMethod specifies how the private link NAT IPs are allocated: "Static" or "Dynamic".
+    privateIPAddress : str, default is Undefined, optional
+        private IP address
+    subnet : str, default is Undefined, required
+        Subnet from which the IP is allocated.
+    """
+
+
+    allocationMethod: "Static" | "Dynamic"
+
+    privateIPAddress?: str
+
+    subnet: str
+
+
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLB:
     r"""
     NodeOutboundLB is the configuration for the node outbound load balancer.
 
     Attributes
     ----------
+    availabilityZones : [str], default is Undefined, optional
+        AvailabilityZones is a list of availability zones for the load balancer.
+        When specified for an internal load balancer, the frontend IP configuration
+        will be zone-redundant across the specified zones.
+        For public load balancers, this should be set on the associated public IP addresses instead.
     backendPool : InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBBackendPool, default is Undefined, optional
         backend pool
     frontendIPs : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBFrontendIPsItems0], default is Undefined, optional
@@ -1066,12 +1246,17 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutbound
         IdleTimeoutInMinutes specifies the timeout for the TCP idle connection.
     name : str, default is Undefined, optional
         name
+    privateLinks : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBPrivateLinksItems0], default is Undefined, optional
+        PrivateLinks to the load balancer (max 8 private links).
+        Only supported on the API server load balancer.
     sku : str, default is Undefined, optional
         SKU defines an Azure load balancer SKU.
     $type : str, default is Undefined, optional
         LBType defines an Azure load balancer Type.
     """
 
+
+    availabilityZones?: [str]
 
     backendPool?: InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBBackendPool
 
@@ -1085,9 +1270,17 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutbound
 
     name?: str
 
+    privateLinks?: [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBPrivateLinksItems0]
+
     sku?: str
 
     $type?: str
+
+
+    check:
+        len(availabilityZones) <= 3 if availabilityZones
+        all i in availabilityZones { _regex_match(str(i), r"^[1-3]$") if i } if availabilityZones
+        len(privateLinks) <= 8 if privateLinks
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBBackendPool:
@@ -1169,6 +1362,71 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutbound
     tag: str
 
     $type: str
+
+
+schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBPrivateLinksItems0:
+    r"""
+    PrivateLink configures an Azure private link.
+
+    Attributes
+    ----------
+    allowedSubscriptions : [str], default is Undefined, optional
+        AllowedSubscriptions is a list of subscriptions from which the private link can be accessed.
+    autoApprovedSubscriptions : [str], default is Undefined, optional
+        AutoApprovedSubscriptions is a list of subscription for which the connections to private link are automatically
+        approved.
+    enableProxyProtocol : bool, default is Undefined, optional
+        EnableProxyProtocol indicates whether the private link service is enabled for proxy protocol or not.
+    lbFrontendIPConfigNames : [str], default is Undefined, required
+        LBFrontendIPConfigNames are the names of the load balancer FrontendIP to which the private link will forward
+        requests. The specified frontend IP configs must have the private IP set.
+    name : str, default is Undefined, required
+        Name of the private link.
+    natIPConfigurations : [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBPrivateLinksItems0NatIPConfigurationsItems0], default is Undefined, required
+        NATIPConfigurations specify up to 8 NAT IP configurations for the private link.
+    """
+
+
+    allowedSubscriptions?: [str]
+
+    autoApprovedSubscriptions?: [str]
+
+    enableProxyProtocol?: bool
+
+    lbFrontendIPConfigNames: [str]
+
+    name: str
+
+    natIPConfigurations: [InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBPrivateLinksItems0NatIPConfigurationsItems0]
+
+
+    check:
+        len(lbFrontendIPConfigNames) >= 1
+        len(name) >= 1
+        len(natIPConfigurations) >= 1
+        len(natIPConfigurations) <= 8
+
+
+schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecNodeOutboundLBPrivateLinksItems0NatIPConfigurationsItems0:
+    r"""
+    PrivateLinkNATIPConfiguration specifies NAT IP configuration for the private link.
+
+    Attributes
+    ----------
+    allocationMethod : str, default is Undefined, required
+        AllocationMethod specifies how the private link NAT IPs are allocated: "Static" or "Dynamic".
+    privateIPAddress : str, default is Undefined, optional
+        private IP address
+    subnet : str, default is Undefined, required
+        Subnet from which the IP is allocated.
+    """
+
+
+    allocationMethod: "Static" | "Dynamic"
+
+    privateIPAddress?: str
+
+    subnet: str
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecSubnetsItems0:
@@ -1410,7 +1668,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecSubnetsItems
     ----------
     action : str, default is "Allow", optional
         Action specifies whether network traffic is allowed or denied. Can either be "Allow" or "Deny". Defaults to "Allow".
-    description : str, default is Undefined, required
+    description : str, default is Undefined, optional
         A description for this rule. Restricted to 140 chars.
     destination : str, default is Undefined, optional
         Destination is the destination address prefix. CIDR or destination IP range. Asterix '*' can also be used to match all source IPs. Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used.
@@ -1435,7 +1693,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecSubnetsItems
 
     action?: "Allow" | "Deny" = "Allow"
 
-    description: str
+    description?: str
 
     destination?: str
 
@@ -1454,6 +1712,10 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecSubnetsItems
     sourcePorts?: str
 
     sources?: [str]
+
+
+    check:
+        len(description) <= 140 if description not in [None, Undefined]
 
 
 schema InfrastructureClusterxK8sIoV1beta1AzureClusterSpecNetworkSpecSubnetsItems0ServiceEndpointsItems0:

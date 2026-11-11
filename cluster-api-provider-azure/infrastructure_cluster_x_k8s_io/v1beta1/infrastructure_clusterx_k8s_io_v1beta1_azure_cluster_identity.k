@@ -62,7 +62,7 @@ schema InfrastructureClusterxK8sIoV1beta1AzureClusterIdentitySpec:
         ServicePrincipal, ServicePrincipalCertificate, UserAssignedMSI, ManualServicePrincipal, UserAssignedIdentityCredential, or WorkloadIdentity.
     userAssignedIdentityCredentialsCloudType : str, default is Undefined, optional
         UserAssignedIdentityCredentialsCloudType is used with UserAssignedIdentityCredentialsPath to specify the Cloud
-        type. Can only be one of the following values: public, china, or usgovernment
+        type. Can only be one of the following values: public, china, usgovernment, or ussec
         If a value is not specified, defaults to public
     userAssignedIdentityCredentialsPath : str, default is Undefined, optional
         UserAssignedIdentityCredentialsPath is the path where an existing JSON file exists containing the JSON format of
