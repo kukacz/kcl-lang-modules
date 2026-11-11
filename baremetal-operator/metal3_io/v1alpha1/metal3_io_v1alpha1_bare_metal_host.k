@@ -73,8 +73,16 @@ schema Metal3IoV1alpha1BareMetalHostSpec:
         ExternallyProvisioned means something else has provisioned the
         image running on the host, and the operator should only manage
         the power status. This field is used for integration with already
-        provisioned hosts and when pivoting hosts between clusters. If
-        unsure, leave this field as false.
+        provisioned hosts and when pivoting hosts between clusters.
+
+        This field can be set to true either:
+        1. During initial host creation (e.g., for pre-provisioned hosts)
+        2. After inspection completes when the host reaches Available state
+
+        When used in environments with Cluster API Provider Metal3 (CAPM3),
+        ensure hosts are labeled appropriately so CAPM3's host selector can
+        distinguish them from CAPM3-managed hosts. If unsure, leave this
+        field as false.
     firmware : Metal3IoV1alpha1BareMetalHostSpecFirmware, default is Undefined, optional
         firmware
     hardwareProfile : str, default is Undefined, optional
@@ -85,10 +93,21 @@ schema Metal3IoV1alpha1BareMetalHostSpec:
         without hardware profiles.
     image : Metal3IoV1alpha1BareMetalHostSpecImage, default is Undefined, optional
         image
+    inspectionMode : str, default is Undefined, optional
+        Specifies the mode for host inspection.
+        "disabled" - no inspection will be performed
+        "agent" - normal agent-based inspection will run
+        "fast" - out-of-band inspection via BMC (Redfish), no ramdisk boot
     metaData : Metal3IoV1alpha1BareMetalHostSpecMetaData, default is Undefined, optional
         meta data
     networkData : Metal3IoV1alpha1BareMetalHostSpecNetworkData, default is Undefined, optional
         network data
+    networkInterfaces : [Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0], default is Undefined, optional
+        NetworkInterfaces defines the network configuration for each interface.
+        This will be used to configure switch ports for the host.  Interface
+        names must correspond to actual NICs discovered during inspection
+        (see HardwareData resource).  They are referenced by either the name
+        or MAC address of the NIC.
     online : bool, default is Undefined, required
         Should the host be powered on? If the host is currently in a stable
         state (e.g. provisioned), its power state will be forced to match
@@ -104,8 +123,9 @@ schema Metal3IoV1alpha1BareMetalHostSpec:
         root device hints
     taints : [Metal3IoV1alpha1BareMetalHostSpecTaintsItems0], default is Undefined, optional
         Taints is the full, authoritative list of taints to apply to
-        the corresponding Machine. This list will overwrite any
-        modifications made to the Machine on an ongoing basis.
+        the corresponding Machine.
+
+        Deprecated: the Taints field was never actually implemented.
     userData : Metal3IoV1alpha1BareMetalHostSpecUserData, default is Undefined, optional
         user data
     """
@@ -137,9 +157,13 @@ schema Metal3IoV1alpha1BareMetalHostSpec:
 
     image?: Metal3IoV1alpha1BareMetalHostSpecImage
 
+    inspectionMode?: "disabled" | "agent" | "fast"
+
     metaData?: Metal3IoV1alpha1BareMetalHostSpecMetaData
 
     networkData?: Metal3IoV1alpha1BareMetalHostSpecNetworkData
+
+    networkInterfaces?: [Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0]
 
     online: bool
 
@@ -262,7 +286,8 @@ schema Metal3IoV1alpha1BareMetalHostSpecFirmware:
     r"""
     Firmware (BIOS) configuration for bare metal server. If set, the
     requested settings will be applied before the host is provisioned.
-    Only some vendor drivers support this field. An alternative is to
+
+    Deprecated: no longer supported by any driver. An alternative is to
     use HostFirmwareSettings resources that allow changing arbitrary
     values and support the generic Redfish-based drivers.
 
@@ -293,7 +318,7 @@ schema Metal3IoV1alpha1BareMetalHostSpecImage:
     ----------
     checksum : str, default is Undefined, optional
         Checksum is the checksum for the image. Required for all formats
-        except for "live-iso".
+        except for "live-iso" and OCI images (oci://).
     checksumType : str, default is Undefined, optional
         ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512.
         The special value "auto" can be used to detect the algorithm from the checksum.
@@ -302,6 +327,11 @@ schema Metal3IoV1alpha1BareMetalHostSpecImage:
         Format contains the format of the image (raw, qcow2, ...).
         When set to "live-iso", an ISO 9660 image referenced by the url will
         be live-booted and not deployed to disk.
+    ociAuthSecretName : str, default is Undefined, optional
+        OCIAuthSecretName optionally names a Docker-config secret containing
+        registry credentials for oci:// images. Must be in the same namespace
+        as the BareMetalHost. Allowed types: kubernetes.io/dockerconfigjson|dockercfg.
+        Only used when Image.URL has the oci:// scheme.
     url : str, default is Undefined, required
         URL is a location of an image to deploy.
     """
@@ -312,6 +342,8 @@ schema Metal3IoV1alpha1BareMetalHostSpecImage:
     checksumType?: "md5" | "sha256" | "sha512" | "auto"
 
     format?: "raw" | "qcow2" | "vdi" | "vmdk" | "live-iso"
+
+    ociAuthSecretName?: str
 
     url: str
 
@@ -354,6 +386,94 @@ schema Metal3IoV1alpha1BareMetalHostSpecNetworkData:
     name?: str
 
     namespace?: str
+
+
+schema Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0:
+    r"""
+    NetworkInterface defines the network configuration for a specific interface.
+
+    Attributes
+    ----------
+    hostNetworkAttachment : Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0HostNetworkAttachment, default is Undefined, optional
+        host network attachment
+    macAddress : str, default is Undefined, optional
+        MAC address of the network interface.  This must match the MAC address
+        of a NIC discovered during inspection (see HardwareData resource).
+        Mutually exclusive with Name.
+    name : str, default is Undefined, optional
+        Name of the network interface (e.g., "eth0", "ens1f0")
+        This must match the name of a NIC discovered during inspection
+        (see HardwareData resource).
+        Mutually exclusive with MACAddress.
+    switchPort : Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0SwitchPort, default is Undefined, optional
+        switch port
+    """
+
+
+    hostNetworkAttachment?: Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0HostNetworkAttachment
+
+    macAddress?: str
+
+    name?: str
+
+    switchPort?: Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0SwitchPort
+
+
+    check:
+        _regex_match(str(macAddress), r"^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$") if macAddress
+        _regex_match(str(name), r"^[a-zA-Z0-9._-]+$") if name
+
+
+schema Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0HostNetworkAttachment:
+    r"""
+    HostNetworkAttachment references the HostNetworkAttachment for this interface
+
+    Attributes
+    ----------
+    name : str, default is Undefined, optional
+        Name of the HostNetworkAttachment resource
+    namespace : str, default is Undefined, optional
+        Namespace of the HostNetworkAttachment (defaults to BMH namespace)
+    """
+
+
+    name?: str
+
+    namespace?: str
+
+
+    check:
+        len(name) <= 253 if name not in [None, Undefined]
+        len(namespace) <= 63 if namespace not in [None, Undefined]
+
+
+schema Metal3IoV1alpha1BareMetalHostSpecNetworkInterfacesItems0SwitchPort:
+    r"""
+    SwitchPort defines the switch port on which this interface is attached.
+    This is intended to be a replacement for LLDP information if
+    LLDP is not enabled on the neighboring switches or if inspection is not
+    used on the BMH.  If LLDP information is acquired during inspection and
+    this field is provided then it will override the LLDP provided
+    information; therefore, caution must be exercised when supplying this
+    value.
+
+    Attributes
+    ----------
+    portID : str, default is Undefined, required
+        PortID is expected to be the configuration name of the port in the
+        switch management system.
+    switchID : str, default is Undefined, required
+        SwitchID is expected to be the management MAC address of the switch
+    """
+
+
+    portID: str
+
+    switchID: str
+
+
+    check:
+        _regex_match(str(switchID), r"^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$")
 
 
 schema Metal3IoV1alpha1BareMetalHostSpecRaid:
@@ -437,7 +557,7 @@ schema Metal3IoV1alpha1BareMetalHostSpecRaidHardwareRAIDVolumesItems0:
 
 
     check:
-        len(name) <= 64 if name
+        len(name) <= 64 if name not in [None, Undefined]
         numberOfPhysicalDisks >= 1 if numberOfPhysicalDisks not in [None, Undefined]
         sizeGibibytes >= 0 if sizeGibibytes not in [None, Undefined]
 
@@ -453,6 +573,9 @@ schema Metal3IoV1alpha1BareMetalHostSpecRaidSoftwareRAIDVolumesItems0:
         0, 1 and 1+0.
     physicalDisks : [Metal3IoV1alpha1BareMetalHostSpecRaidSoftwareRAIDVolumesItems0PhysicalDisksItems0], default is Undefined, optional
         A list of device hints, the number of items should be greater than or equal to 2.
+    rootVolume : bool, default is Undefined, optional
+        Setting this to true, causes installer to consider this volume as root device for installation.
+        This can only be set for one of the volumes.
     sizeGibibytes : int, default is Undefined, optional
         Size of the logical disk to be created in GiB.
         If unspecified or set be 0, the maximum capacity of disk will be used for logical disk.
@@ -462,6 +585,8 @@ schema Metal3IoV1alpha1BareMetalHostSpecRaidSoftwareRAIDVolumesItems0:
     level: "0" | "1" | "1+0"
 
     physicalDisks?: [Metal3IoV1alpha1BareMetalHostSpecRaidSoftwareRAIDVolumesItems0PhysicalDisksItems0]
+
+    rootVolume?: bool = False
 
     sizeGibibytes?: int
 
@@ -615,7 +740,6 @@ schema Metal3IoV1alpha1BareMetalHostSpecTaintsItems0:
         Required. The taint key to be applied to a node.
     timeAdded : str, default is Undefined, optional
         TimeAdded represents the time at which the taint was added.
-        It is only written for NoExecute taints.
     value : str, default is Undefined, optional
         The taint value corresponding to the taint key.
     """
@@ -657,6 +781,8 @@ schema Metal3IoV1alpha1BareMetalHostStatus:
 
     Attributes
     ----------
+    conditions : [Metal3IoV1alpha1BareMetalHostStatusConditionsItems0], default is Undefined, optional
+        Conditions defines current service state of the BareMetalHost.
     errorCount : int, default is Undefined, required
         ErrorCount records how many times the host has encoutered an error since the last successful operation
     errorMessage : str, default is Undefined, required
@@ -671,6 +797,8 @@ schema Metal3IoV1alpha1BareMetalHostStatus:
     hardwareProfile : str, default is Undefined, optional
         The name of the profile matching the hardware details.
         Hardware profiles are deprecated and should not be relied on.
+    lastAttemptedImage : Metal3IoV1alpha1BareMetalHostStatusLastAttemptedImage, default is Undefined, optional
+        last attempted image
     lastUpdated : str, default is Undefined, optional
         LastUpdated identifies when this status was last observed.
     operationHistory : Metal3IoV1alpha1BareMetalHostStatusOperationHistory, default is Undefined, optional
@@ -683,10 +811,17 @@ schema Metal3IoV1alpha1BareMetalHostStatus:
         provisioning processes are running.
     provisioning : Metal3IoV1alpha1BareMetalHostStatusProvisioning, default is Undefined, required
         provisioning
+    provisioningFailCount : int, default is Undefined, required
+        ProvisioningFailCount records how many times provisioning has failed
+        consecutively for the current image. Unlike ErrorCount, it is not reset
+        on deprovisioning and is only cleared on successful provisioning or when
+        a new image is specified.
     triedCredentials : Metal3IoV1alpha1BareMetalHostStatusTriedCredentials, default is Undefined, optional
         tried credentials
     """
 
+
+    conditions?: [Metal3IoV1alpha1BareMetalHostStatusConditionsItems0]
 
     errorCount: int = 0
 
@@ -700,6 +835,8 @@ schema Metal3IoV1alpha1BareMetalHostStatus:
 
     hardwareProfile?: str
 
+    lastAttemptedImage?: Metal3IoV1alpha1BareMetalHostStatusLastAttemptedImage
+
     lastUpdated?: str
 
     operationHistory?: Metal3IoV1alpha1BareMetalHostStatusOperationHistory
@@ -710,7 +847,65 @@ schema Metal3IoV1alpha1BareMetalHostStatus:
 
     provisioning: Metal3IoV1alpha1BareMetalHostStatusProvisioning
 
+    provisioningFailCount: int = 0
+
     triedCredentials?: Metal3IoV1alpha1BareMetalHostStatusTriedCredentials
+
+
+    check:
+        len(conditions) <= 32 if conditions
+
+
+schema Metal3IoV1alpha1BareMetalHostStatusConditionsItems0:
+    r"""
+    Condition contains details for one aspect of the current state of this API Resource.
+
+    Attributes
+    ----------
+    lastTransitionTime : str, default is Undefined, required
+        lastTransitionTime is the last time the condition transitioned from one status to another.
+        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+    message : str, default is Undefined, required
+        message is a human readable message indicating details about the transition.
+        This may be an empty string.
+    observedGeneration : int, default is Undefined, optional
+        observedGeneration represents the .metadata.generation that the condition was set based upon.
+        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+        with respect to the current state of the instance.
+    reason : str, default is Undefined, required
+        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+        Producers of specific condition types may define expected values and meanings for this field,
+        and whether the values are considered a guaranteed API.
+        The value should be a CamelCase string.
+        This field may not be empty.
+    status : str, default is Undefined, required
+        status of the condition, one of True, False, Unknown.
+    $type : str, default is Undefined, required
+        type of condition in CamelCase or in foo.example.com/CamelCase.
+    """
+
+
+    lastTransitionTime: str
+
+    message: str
+
+    observedGeneration?: int
+
+    reason: str
+
+    status: "True" | "False" | "Unknown"
+
+    $type: str
+
+
+    check:
+        len(message) <= 32768
+        observedGeneration >= 0 if observedGeneration not in [None, Undefined]
+        len(reason) <= 1024
+        len(reason) >= 1
+        _regex_match(str(reason), r"^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$")
+        len($type) <= 316
+        _regex_match(str($type), r"^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$")
 
 
 schema Metal3IoV1alpha1BareMetalHostStatusGoodCredentials:
@@ -763,7 +958,7 @@ schema Metal3IoV1alpha1BareMetalHostStatusHardware:
     firmware : Metal3IoV1alpha1BareMetalHostStatusHardwareFirmware, default is Undefined, optional
         firmware
     hostname : str, default is Undefined, optional
-        hostname
+        Name of the host at the inspection time.
     nics : [Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0], default is Undefined, optional
         List of network interfaces for the host.
     ramMebibytes : int, default is Undefined, optional
@@ -866,12 +1061,16 @@ schema Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0:
         The IP address of the interface. This will be an IPv4 or IPv6 address
         if one is present.  If both IPv4 and IPv6 addresses are present in a
         dual-stack environment, two nics will be output, one with each IP.
+    lldp : Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0Lldp, default is Undefined, optional
+        lldp
     mac : str, default is Undefined, optional
         The device MAC address
     model : str, default is Undefined, optional
         The vendor and product IDs of the NIC, e.g. "0x8086 0x1572"
     name : str, default is Undefined, optional
         The name of the network interface, e.g. "en0"
+    pciAddress : str, default is Undefined, optional
+        The NIC PCI address
     pxe : bool, default is Undefined, optional
         Whether the NIC is PXE Bootable
     speedGbps : int, default is Undefined, optional
@@ -885,11 +1084,15 @@ schema Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0:
 
     ip?: str
 
+    lldp?: Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0Lldp
+
     mac?: str
 
     model?: str
 
     name?: str
+
+    pciAddress?: str
 
     pxe?: bool
 
@@ -904,6 +1107,28 @@ schema Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0:
         _regex_match(str(mac), r"[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}") if mac
         vlanId <= 4094 if vlanId not in [None, Undefined]
         vlanId >= 0 if vlanId not in [None, Undefined]
+
+
+schema Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0Lldp:
+    r"""
+    LLDP data for this interface
+
+    Attributes
+    ----------
+    portID : str, default is Undefined, optional
+        The switch port ID from LLDP
+    switchID : str, default is Undefined, optional
+        The switch chassis ID from LLDP
+    switchSystemName : str, default is Undefined, optional
+        The switch system name from LLDP
+    """
+
+
+    portID?: str
+
+    switchID?: str
+
+    switchSystemName?: str
 
 
 schema Metal3IoV1alpha1BareMetalHostStatusHardwareNicsItems0VlansItems0:
@@ -1014,6 +1239,46 @@ schema Metal3IoV1alpha1BareMetalHostStatusHardwareSystemVendor:
     productName?: str
 
     serialNumber?: str
+
+
+schema Metal3IoV1alpha1BareMetalHostStatusLastAttemptedImage:
+    r"""
+    LastAttemptedImage stores the full image spec of the last provisioning
+    attempt, used to detect user-initiated image changes (URL, checksum,
+    format, etc.) that should reset the provisioning retry limit counter.
+
+    Attributes
+    ----------
+    checksum : str, default is Undefined, optional
+        Checksum is the checksum for the image. Required for all formats
+        except for "live-iso" and OCI images (oci://).
+    checksumType : str, default is Undefined, optional
+        ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512.
+        The special value "auto" can be used to detect the algorithm from the checksum.
+        If missing, MD5 is used. If in doubt, use "auto".
+    format : str, default is Undefined, optional
+        Format contains the format of the image (raw, qcow2, ...).
+        When set to "live-iso", an ISO 9660 image referenced by the url will
+        be live-booted and not deployed to disk.
+    ociAuthSecretName : str, default is Undefined, optional
+        OCIAuthSecretName optionally names a Docker-config secret containing
+        registry credentials for oci:// images. Must be in the same namespace
+        as the BareMetalHost. Allowed types: kubernetes.io/dockerconfigjson|dockercfg.
+        Only used when Image.URL has the oci:// scheme.
+    url : str, default is Undefined, required
+        URL is a location of an image to deploy.
+    """
+
+
+    checksum?: str
+
+    checksumType?: "md5" | "sha256" | "sha512" | "auto"
+
+    format?: "raw" | "qcow2" | "vdi" | "vmdk" | "live-iso"
+
+    ociAuthSecretName?: str
+
+    url: str
 
 
 schema Metal3IoV1alpha1BareMetalHostStatusOperationHistory:
@@ -1209,7 +1474,7 @@ schema Metal3IoV1alpha1BareMetalHostStatusProvisioningImage:
     ----------
     checksum : str, default is Undefined, optional
         Checksum is the checksum for the image. Required for all formats
-        except for "live-iso".
+        except for "live-iso" and OCI images (oci://).
     checksumType : str, default is Undefined, optional
         ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512.
         The special value "auto" can be used to detect the algorithm from the checksum.
@@ -1218,6 +1483,11 @@ schema Metal3IoV1alpha1BareMetalHostStatusProvisioningImage:
         Format contains the format of the image (raw, qcow2, ...).
         When set to "live-iso", an ISO 9660 image referenced by the url will
         be live-booted and not deployed to disk.
+    ociAuthSecretName : str, default is Undefined, optional
+        OCIAuthSecretName optionally names a Docker-config secret containing
+        registry credentials for oci:// images. Must be in the same namespace
+        as the BareMetalHost. Allowed types: kubernetes.io/dockerconfigjson|dockercfg.
+        Only used when Image.URL has the oci:// scheme.
     url : str, default is Undefined, required
         URL is a location of an image to deploy.
     """
@@ -1228,6 +1498,8 @@ schema Metal3IoV1alpha1BareMetalHostStatusProvisioningImage:
     checksumType?: "md5" | "sha256" | "sha512" | "auto"
 
     format?: "raw" | "qcow2" | "vdi" | "vmdk" | "live-iso"
+
+    ociAuthSecretName?: str
 
     url: str
 
@@ -1309,7 +1581,7 @@ schema Metal3IoV1alpha1BareMetalHostStatusProvisioningRaidHardwareRAIDVolumesIte
 
 
     check:
-        len(name) <= 64 if name
+        len(name) <= 64 if name not in [None, Undefined]
         numberOfPhysicalDisks >= 1 if numberOfPhysicalDisks not in [None, Undefined]
         sizeGibibytes >= 0 if sizeGibibytes not in [None, Undefined]
 
@@ -1325,6 +1597,9 @@ schema Metal3IoV1alpha1BareMetalHostStatusProvisioningRaidSoftwareRAIDVolumesIte
         0, 1 and 1+0.
     physicalDisks : [Metal3IoV1alpha1BareMetalHostStatusProvisioningRaidSoftwareRAIDVolumesItems0PhysicalDisksItems0], default is Undefined, optional
         A list of device hints, the number of items should be greater than or equal to 2.
+    rootVolume : bool, default is Undefined, optional
+        Setting this to true, causes installer to consider this volume as root device for installation.
+        This can only be set for one of the volumes.
     sizeGibibytes : int, default is Undefined, optional
         Size of the logical disk to be created in GiB.
         If unspecified or set be 0, the maximum capacity of disk will be used for logical disk.
@@ -1334,6 +1609,8 @@ schema Metal3IoV1alpha1BareMetalHostStatusProvisioningRaidSoftwareRAIDVolumesIte
     level: "0" | "1" | "1+0"
 
     physicalDisks?: [Metal3IoV1alpha1BareMetalHostStatusProvisioningRaidSoftwareRAIDVolumesItems0PhysicalDisksItems0]
+
+    rootVolume?: bool = False
 
     sizeGibibytes?: int
 

@@ -58,7 +58,7 @@ schema Metal3IoV1alpha1HardwareDataSpecHardware:
     firmware : Metal3IoV1alpha1HardwareDataSpecHardwareFirmware, default is Undefined, optional
         firmware
     hostname : str, default is Undefined, optional
-        hostname
+        Name of the host at the inspection time.
     nics : [Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0], default is Undefined, optional
         List of network interfaces for the host.
     ramMebibytes : int, default is Undefined, optional
@@ -161,12 +161,16 @@ schema Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0:
         The IP address of the interface. This will be an IPv4 or IPv6 address
         if one is present.  If both IPv4 and IPv6 addresses are present in a
         dual-stack environment, two nics will be output, one with each IP.
+    lldp : Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0Lldp, default is Undefined, optional
+        lldp
     mac : str, default is Undefined, optional
         The device MAC address
     model : str, default is Undefined, optional
         The vendor and product IDs of the NIC, e.g. "0x8086 0x1572"
     name : str, default is Undefined, optional
         The name of the network interface, e.g. "en0"
+    pciAddress : str, default is Undefined, optional
+        The NIC PCI address
     pxe : bool, default is Undefined, optional
         Whether the NIC is PXE Bootable
     speedGbps : int, default is Undefined, optional
@@ -180,11 +184,15 @@ schema Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0:
 
     ip?: str
 
+    lldp?: Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0Lldp
+
     mac?: str
 
     model?: str
 
     name?: str
+
+    pciAddress?: str
 
     pxe?: bool
 
@@ -199,6 +207,28 @@ schema Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0:
         _regex_match(str(mac), r"[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}") if mac
         vlanId <= 4094 if vlanId not in [None, Undefined]
         vlanId >= 0 if vlanId not in [None, Undefined]
+
+
+schema Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0Lldp:
+    r"""
+    LLDP data for this interface
+
+    Attributes
+    ----------
+    portID : str, default is Undefined, optional
+        The switch port ID from LLDP
+    switchID : str, default is Undefined, optional
+        The switch chassis ID from LLDP
+    switchSystemName : str, default is Undefined, optional
+        The switch system name from LLDP
+    """
+
+
+    portID?: str
+
+    switchID?: str
+
+    switchSystemName?: str
 
 
 schema Metal3IoV1alpha1HardwareDataSpecHardwareNicsItems0VlansItems0:
