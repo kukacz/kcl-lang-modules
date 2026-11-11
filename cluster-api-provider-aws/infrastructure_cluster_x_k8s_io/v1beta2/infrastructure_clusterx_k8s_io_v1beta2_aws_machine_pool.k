@@ -143,6 +143,8 @@ schema InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplate:
         "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
         "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
         "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation
+    enclaveOptions : InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplateEnclaveOptions, default is Undefined, optional
+        enclave options
     iamInstanceProfile : str, default is Undefined, optional
         The name or the Amazon Resource Name (ARN) of the instance profile associated
         with the IAM role for the instance. The instance profile contains the IAM
@@ -204,6 +206,8 @@ schema InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplate:
     capacityReservationId?: str
 
     capacityReservationPreference?: str
+
+    enclaveOptions?: InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplateEnclaveOptions
 
     iamInstanceProfile?: str
 
@@ -290,6 +294,20 @@ schema InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplateAmi:
     eksLookupType?: "AmazonLinux" | "AmazonLinuxGPU" | "AmazonLinux2023" | "AmazonLinux2023GPU"
 
     id?: str
+
+
+schema InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplateEnclaveOptions:
+    r"""
+    EnclaveOptions defines the options for Nitro Enclave support on the instance.
+
+    Attributes
+    ----------
+    enabled : bool, default is Undefined, optional
+        Enabled enables the instance for AWS Nitro Enclaves.
+    """
+
+
+    enabled?: bool
 
 
 schema InfrastructureClusterxK8sIoV1beta2AWSMachinePoolSpecAwsLaunchTemplateInstanceMetadataOptions:

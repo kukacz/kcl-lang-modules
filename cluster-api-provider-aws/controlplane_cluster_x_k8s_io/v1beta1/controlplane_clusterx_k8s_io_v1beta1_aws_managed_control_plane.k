@@ -13,68 +13,65 @@ schema AWSManagedControlPlane:
 
     Attributes
     ----------
-    apiVersion : str, default is "controlplane.cluster.x-k8s.io/v1beta2", required
+    apiVersion : str, default is "controlplane.cluster.x-k8s.io/v1beta1", required
         APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
     kind : str, default is "AWSManagedControlPlane", required
         Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     metadata : v1.ObjectMeta, default is Undefined, optional
         metadata
-    spec : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec, default is Undefined, optional
+    spec : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpec, default is Undefined, optional
         spec
-    status : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatus, default is Undefined, optional
+    status : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatus, default is Undefined, optional
         status
     """
 
 
-    apiVersion: "controlplane.cluster.x-k8s.io/v1beta2" = "controlplane.cluster.x-k8s.io/v1beta2"
+    apiVersion: "controlplane.cluster.x-k8s.io/v1beta1" = "controlplane.cluster.x-k8s.io/v1beta1"
 
     kind: "AWSManagedControlPlane" = "AWSManagedControlPlane"
 
     metadata?: v1.ObjectMeta
 
-    spec?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec
+    spec?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpec
 
-    status?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatus
+    status?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatus
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpec:
     r"""
     AWSManagedControlPlaneSpec defines the desired state of an Amazon EKS Cluster.
 
     Attributes
     ----------
-    accessConfig : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessConfig, default is Undefined, optional
-        access config
-    accessEntries : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0], default is Undefined, optional
-        AccessEntries specifies the access entries for the cluster
-        Access entries require AuthenticationMode to be either "api" or "api_and_config_map"
     additionalTags : {str:str}, default is Undefined, optional
         AdditionalTags is an optional set of tags to add to AWS resources managed by the AWS provider, in addition to the
         ones added by default.
-    addons : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAddonsItems0], default is Undefined, optional
+    addons : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecAddonsItems0], default is Undefined, optional
         Addons defines the EKS addons to enable with the EKS cluster.
     associateOIDCProvider : bool, default is Undefined, optional
         AssociateOIDCProvider can be enabled to automatically create an identity
         provider for the controller for use with IAM roles for service accounts
-    bastion : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecBastion, default is Undefined, optional
+    bastion : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecBastion, default is Undefined, optional
         bastion
-    bootstrapSelfManagedAddons : bool, default is True, optional
-        BootstrapSelfManagedAddons is used to set configuration options for
-        bare EKS cluster without EKS default networking addons
-        If you set this value to false when creating a cluster, the default networking add-ons will not be installed
-    controlPlaneEndpoint : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecControlPlaneEndpoint, default is Undefined, optional
+    controlPlaneEndpoint : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecControlPlaneEndpoint, default is Undefined, optional
         control plane endpoint
+    disableVPCCNI : bool, default is Undefined, optional
+        DisableVPCCNI indicates that the Amazon VPC CNI should be disabled. With EKS clusters the
+        Amazon VPC CNI is automatically installed into the cluster. For clusters where you want
+        to use an alternate CNI this option provides a way to specify that the Amazon VPC CNI
+        should be deleted. You cannot set this to true if you are using the
+        Amazon VPC CNI addon.
     eksClusterName : str, default is Undefined, optional
         EKSClusterName allows you to specify the name of the EKS cluster in
         AWS. If you don't specify a name then a default name will be created
         based on the namespace and name of the managed control plane.
-    encryptionConfig : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEncryptionConfig, default is Undefined, optional
+    encryptionConfig : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecEncryptionConfig, default is Undefined, optional
         encryption config
-    endpointAccess : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEndpointAccess, default is Undefined, optional
+    endpointAccess : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecEndpointAccess, default is Undefined, optional
         endpoint access
-    iamAuthenticatorConfig : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfig, default is Undefined, optional
+    iamAuthenticatorConfig : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfig, default is Undefined, optional
         iam authenticator config
-    identityRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIdentityRef, default is Undefined, optional
+    identityRef : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIdentityRef, default is Undefined, optional
         identity ref
     imageLookupBaseOS : str, default is Undefined, optional
         ImageLookupBaseOS is the name of the base operating system used to look
@@ -98,20 +95,16 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
         ImageLookupOrg is the AWS Organization ID to look up machine images when a
         machine does not specify an AMI. When set, this will be used for all
         cluster machines unless a machine specifies a different ImageLookupOrg.
-    kubeProxy : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecKubeProxy, default is Undefined, optional
+    kubeProxy : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecKubeProxy, default is Undefined, optional
         kube proxy
-    logging : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecLogging, default is Undefined, optional
+    logging : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecLogging, default is Undefined, optional
         logging
-    network : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetwork, default is Undefined, optional
+    network : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetwork, default is Undefined, optional
         network
-    oidcIdentityProviderConfig : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecOidcIdentityProviderConfig, default is Undefined, optional
+    oidcIdentityProviderConfig : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecOidcIdentityProviderConfig, default is Undefined, optional
         oidc identity provider config
-    partition : str, default is Undefined, optional
-        Partition is the AWS security partition being used. Defaults to "aws"
     region : str, default is Undefined, optional
         The AWS Region the cluster lives in.
-    restrictPrivateSubnets : bool, default is Undefined, optional
-        RestrictPrivateSubnets indicates that the EKS control plane should only use private subnets.
     roleAdditionalPolicies : [str], default is Undefined, optional
         RoleAdditionalPolicies allows you to attach additional polices to
         the control plane role. You must enable the EKSAllowAddRoles
@@ -122,26 +115,6 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
         we will treat it as unmanaged and not delete it on
         deletion. If the EKSEnableIAM feature flag is true
         and no name is supplied then a role is created.
-    rolePath : str, default is Undefined, optional
-        RolePath sets the path to the role. For more information about paths, see IAM Identifiers
-        (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
-        in the IAM User Guide.
-
-        This parameter is optional. If it is not included, it defaults to a slash
-        (/).
-    rolePermissionsBoundary : str, default is Undefined, optional
-        RolePermissionsBoundary sets the ARN of the managed policy that is used
-        to set the permissions boundary for the role.
-
-        A permissions boundary policy defines the maximum permissions that identity-based
-        policies can grant to an entity, but does not grant permissions. Permissions
-        boundaries do not define the maximum permissions that a resource-based policy
-        can grant to an entity. To learn more, see Permissions boundaries for IAM
-        entities (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html)
-        in the IAM User Guide.
-
-        For more information about policy types, see Policy types (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types)
-        in the IAM User Guide.
     secondaryCidrBlock : str, default is Undefined, optional
         SecondaryCidrBlock is the additional CIDR range to use for pod IPs.
         Must be within the 100.64.0.0/10 or 198.19.0.0/16 range.
@@ -152,46 +125,36 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
         iam-authenticator - obtains a client token using iam-authentictor
         aws-cli - obtains a client token using the AWS CLI
         Defaults to iam-authenticator
-    upgradePolicy : str, default is Undefined, optional
-        The cluster upgrade policy to use for the cluster.
-        (Official AWS docs for this policy: https://docs.aws.amazon.com/eks/latest/userguide/view-upgrade-policy.html)
-        `extended` upgrade policy indicates that the cluster will enter into extended support once the Kubernetes version reaches end of standard support. You will incur extended support charges with this setting. You can upgrade your cluster to a standard supported Kubernetes version to stop incurring extended support charges.
-        `standard` upgrade policy indicates that the cluster is eligible for automatic upgrade at the end of standard support. You will not incur extended support charges with this setting but your EKS cluster will automatically upgrade to the next supported Kubernetes version in standard support.
-        If omitted, new clusters will use the AWS default upgrade policy (which at the time of writing is "extended") and existing clusters will have their upgrade policy unchanged.
     version : str, default is Undefined, optional
         Version defines the desired Kubernetes version. If no version number
         is supplied then the latest version of Kubernetes that EKS supports
         will be used.
-    vpcCni : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCni, default is Undefined, optional
+    vpcCni : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCni, default is Undefined, optional
         vpc cni
     """
 
 
-    accessConfig?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessConfig
-
-    accessEntries?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0]
-
     additionalTags?: {str:str}
 
-    addons?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAddonsItems0]
+    addons?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecAddonsItems0]
 
     associateOIDCProvider?: bool = False
 
-    bastion?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecBastion
+    bastion?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecBastion
 
-    bootstrapSelfManagedAddons?: bool = True
+    controlPlaneEndpoint?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecControlPlaneEndpoint
 
-    controlPlaneEndpoint?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecControlPlaneEndpoint
+    disableVPCCNI?: bool = False
 
     eksClusterName?: str
 
-    encryptionConfig?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEncryptionConfig
+    encryptionConfig?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecEncryptionConfig
 
-    endpointAccess?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEndpointAccess
+    endpointAccess?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecEndpointAccess
 
-    iamAuthenticatorConfig?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfig
+    iamAuthenticatorConfig?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfig
 
-    identityRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIdentityRef
+    identityRef?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIdentityRef
 
     imageLookupBaseOS?: str
 
@@ -199,27 +162,19 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
 
     imageLookupOrg?: str
 
-    kubeProxy?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecKubeProxy
+    kubeProxy?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecKubeProxy
 
-    logging?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecLogging
+    logging?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecLogging
 
-    network?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetwork
+    network?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetwork
 
-    oidcIdentityProviderConfig?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecOidcIdentityProviderConfig
-
-    partition?: str
+    oidcIdentityProviderConfig?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecOidcIdentityProviderConfig
 
     region?: str
-
-    restrictPrivateSubnets?: bool = False
 
     roleAdditionalPolicies?: [str]
 
     roleName?: str
-
-    rolePath?: str
-
-    rolePermissionsBoundary?: str
 
     secondaryCidrBlock?: str
 
@@ -227,11 +182,9 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
 
     tokenMethod?: "iam-authenticator" | "aws-cli" = "iam-authenticator"
 
-    upgradePolicy?: "extended" | "standard"
-
     version?: str
 
-    vpcCni?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCni
+    vpcCni?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCni
 
 
     check:
@@ -240,105 +193,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpec:
         _regex_match(str(version), r"^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.?(\.0|[1-9][0-9]*)?$") if version
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessConfig:
-    r"""
-    AccessConfig specifies the access configuration information for the cluster
-
-    Attributes
-    ----------
-    authenticationMode : str, default is "config_map", optional
-        AuthenticationMode specifies the desired authentication mode for the cluster
-        Defaults to config_map
-    bootstrapClusterCreatorAdminPermissions : bool, default is True, optional
-        BootstrapClusterCreatorAdminPermissions grants cluster admin permissions
-        to the IAM identity creating the cluster. Only applied during creation,
-        ignored when updating existing clusters. Defaults to true.
-    """
-
-
-    authenticationMode?: "config_map" | "api" | "api_and_config_map" = "config_map"
-
-    bootstrapClusterCreatorAdminPermissions?: bool = True
-
-
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0:
-    r"""
-    AccessEntry represents an AWS EKS access entry for IAM principals
-
-    Attributes
-    ----------
-    accessPolicies : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0AccessPoliciesItems0], default is Undefined, optional
-        AccessPolicies specifies the policies to associate with this access entry
-        Cannot be specified if Type is "ec2_linux" or "ec2_windows"
-    kubernetesGroups : [str], default is Undefined, optional
-        KubernetesGroups represents the Kubernetes groups for the access entry
-        Cannot be specified if Type is "ec2_linux" or "ec2_windows"
-    principalARN : str, default is Undefined, required
-        PrincipalARN is the Amazon Resource Name (ARN) of the IAM principal
-    $type : str, default is "standard", optional
-        Type is the type of access entry. Defaults to standard if not specified.
-    username : str, default is Undefined, optional
-        Username is the username for the access entry
-    """
-
-
-    accessPolicies?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0AccessPoliciesItems0]
-
-    kubernetesGroups?: [str]
-
-    principalARN: str
-
-    $type?: "standard" | "ec2_linux" | "ec2_windows" | "fargate_linux" | "ec2" | "hybrid_linux" | "hyperpod_linux" = "standard"
-
-    username?: str
-
-
-    check:
-        len(accessPolicies) <= 20 if accessPolicies
-
-
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0AccessPoliciesItems0:
-    r"""
-    AccessPolicyReference represents a reference to an AWS EKS access policy
-
-    Attributes
-    ----------
-    accessScope : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0AccessPoliciesItems0AccessScope, default is Undefined, required
-        access scope
-    policyARN : str, default is Undefined, required
-        PolicyARN is the Amazon Resource Name (ARN) of the access policy
-    """
-
-
-    accessScope: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0AccessPoliciesItems0AccessScope
-
-    policyARN: str
-
-
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAccessEntriesItems0AccessPoliciesItems0AccessScope:
-    r"""
-    AccessScope specifies the scope for the policy
-
-    Attributes
-    ----------
-    namespaces : [str], default is Undefined, optional
-        Namespaces are the namespaces for the access scope
-        Only valid when Type is namespace
-    $type : str, default is "cluster", required
-        Type is the type of access scope. Defaults to "cluster".
-    """
-
-
-    namespaces?: [str]
-
-    $type: "cluster" | "namespace" = "cluster"
-
-
-    check:
-        len(namespaces) >= 1 if namespaces
-
-
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAddonsItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecAddonsItems0:
     r"""
     Addon represents a EKS addon.
 
@@ -346,9 +201,9 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAddonsItems0:
     ----------
     configuration : str, default is Undefined, optional
         Configuration of the EKS addon
-    conflictResolution : str, default is "overwrite", optional
+    conflictResolution : str, default is "none", optional
         ConflictResolution is used to declare what should happen if there
-        are parameter conflicts. Defaults to overwrite
+        are parameter conflicts. Defaults to none
     name : str, default is Undefined, required
         Name is the name of the addon
     preserveOnDelete : bool, default is Undefined, optional
@@ -363,7 +218,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAddonsItems0:
 
     configuration?: str
 
-    conflictResolution?: "overwrite" | "none" | "preserve" = "overwrite"
+    conflictResolution?: "overwrite" | "none" = "none"
 
     name: str
 
@@ -378,7 +233,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecAddonsItems0:
         len(name) >= 2
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecBastion:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecBastion:
     r"""
     Bastion contains options to configure the bastion host.
 
@@ -415,29 +270,29 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecBastion:
     instanceType?: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecControlPlaneEndpoint:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecControlPlaneEndpoint:
     r"""
     ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 
     Attributes
     ----------
-    host : str, default is Undefined, required
+    host : str, default is Undefined, optional
         host is the hostname on which the API server is serving.
-    port : int, default is Undefined, required
+    port : int, default is Undefined, optional
         port is the port on which the API server is serving.
     """
 
 
-    host: str
+    host?: str
 
-    port: int
+    port?: int
 
 
     check:
-        len(host) <= 512
+        len(host) <= 512 if host not in [None, Undefined]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEncryptionConfig:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecEncryptionConfig:
     r"""
     EncryptionConfig specifies the encryption configuration for the cluster
 
@@ -455,7 +310,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEncryptionConfi
     resources?: [str]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEndpointAccess:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecEndpointAccess:
     r"""
     Endpoints specifies access to this cluster's control plane endpoints
 
@@ -477,7 +332,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecEndpointAccess:
     publicCIDRs?: [str]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfig:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfig:
     r"""
     IAMAuthenticatorConfig allows the specification of any additional user or role mappings
     for use when generating the aws-iam-authenticator configuration. If this is nil the
@@ -485,19 +340,19 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticato
 
     Attributes
     ----------
-    mapRoles : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfigMapRolesItems0], default is Undefined, optional
+    mapRoles : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfigMapRolesItems0], default is Undefined, optional
         RoleMappings is a list of role mappings
-    mapUsers : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfigMapUsersItems0], default is Undefined, optional
+    mapUsers : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfigMapUsersItems0], default is Undefined, optional
         UserMappings is a list of user mappings
     """
 
 
-    mapRoles?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfigMapRolesItems0]
+    mapRoles?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfigMapRolesItems0]
 
-    mapUsers?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfigMapUsersItems0]
+    mapUsers?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfigMapUsersItems0]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfigMapRolesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfigMapRolesItems0:
     r"""
     RoleMapping represents a mapping from a IAM role to Kubernetes users and groups.
 
@@ -523,7 +378,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticato
         len(rolearn) >= 31
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticatorConfigMapUsersItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIamAuthenticatorConfigMapUsersItems0:
     r"""
     UserMapping represents a mapping from an IAM user to Kubernetes users and groups.
 
@@ -549,7 +404,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIamAuthenticato
         len(userarn) >= 31
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIdentityRef:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecIdentityRef:
     r"""
     IdentityRef is a reference to an identity to be used when reconciling the managed control plane.
     If no identity is specified, the default identity for this controller will be used.
@@ -572,7 +427,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecIdentityRef:
         len(name) >= 1
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecKubeProxy:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecKubeProxy:
     r"""
     KubeProxy defines managed attributes of the kube-proxy daemonset
 
@@ -590,7 +445,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecKubeProxy:
     disable?: bool = False
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecLogging:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecLogging:
     r"""
     Logging specifies which EKS Cluster logs should be enabled. Entries for
     each of the enabled logs will be sent to CloudWatch
@@ -621,17 +476,17 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecLogging:
     scheduler: bool = False
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetwork:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetwork:
     r"""
     NetworkSpec encapsulates all things related to AWS network.
 
     Attributes
     ----------
-    additionalControlPlaneIngressRules : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAdditionalControlPlaneIngressRulesItems0], default is Undefined, optional
+    additionalControlPlaneIngressRules : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkAdditionalControlPlaneIngressRulesItems0], default is Undefined, optional
         AdditionalControlPlaneIngressRules is an optional set of ingress rules to add to the control plane
-    additionalNodeIngressRules : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAdditionalNodeIngressRulesItems0], default is Undefined, optional
+    additionalNodeIngressRules : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkAdditionalNodeIngressRulesItems0], default is Undefined, optional
         AdditionalNodeIngressRules is an optional set of ingress rules to add to every node
-    cni : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCni, default is Undefined, optional
+    cni : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkCni, default is Undefined, optional
         cni
     nodePortIngressRuleCidrBlocks : [str], default is Undefined, optional
         NodePortIngressRuleCidrBlocks is an optional set of CIDR blocks to allow traffic to nodes' NodePort services.
@@ -639,29 +494,29 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetwork:
     securityGroupOverrides : {str:str}, default is Undefined, optional
         SecurityGroupOverrides is an optional set of security groups to use for cluster instances
         This is optional - if not provided new security groups will be created for the cluster
-    subnets : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkSubnetsItems0], default is Undefined, optional
+    subnets : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkSubnetsItems0], default is Undefined, optional
         Subnets configuration.
-    vpc : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc, default is Undefined, optional
+    vpc : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpc, default is Undefined, optional
         vpc
     """
 
 
-    additionalControlPlaneIngressRules?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAdditionalControlPlaneIngressRulesItems0]
+    additionalControlPlaneIngressRules?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkAdditionalControlPlaneIngressRulesItems0]
 
-    additionalNodeIngressRules?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAdditionalNodeIngressRulesItems0]
+    additionalNodeIngressRules?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkAdditionalNodeIngressRulesItems0]
 
-    cni?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCni
+    cni?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkCni
 
     nodePortIngressRuleCidrBlocks?: [str]
 
     securityGroupOverrides?: {str:str}
 
-    subnets?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkSubnetsItems0]
+    subnets?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkSubnetsItems0]
 
-    vpc?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc
+    vpc?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpc
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAdditionalControlPlaneIngressRulesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkAdditionalControlPlaneIngressRulesItems0:
     r"""
     IngressRule defines an AWS ingress rule for security groups.
 
@@ -708,7 +563,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAddition
     toPort: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAdditionalNodeIngressRulesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkAdditionalNodeIngressRulesItems0:
     r"""
     IngressRule defines an AWS ingress rule for security groups.
 
@@ -755,22 +610,22 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkAddition
     toPort: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCni:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkCni:
     r"""
     CNI configuration
 
     Attributes
     ----------
-    cniIngressRules : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCniCniIngressRulesItems0], default is Undefined, optional
+    cniIngressRules : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkCniCniIngressRulesItems0], default is Undefined, optional
         CNIIngressRules specify rules to apply to control plane and worker node security groups.
         The source for the rule will be set to control plane and worker security group IDs.
     """
 
 
-    cniIngressRules?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCniCniIngressRulesItems0]
+    cniIngressRules?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkCniCniIngressRulesItems0]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCniCniIngressRulesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkCniCniIngressRulesItems0:
     r"""
     CNIIngressRule defines an AWS ingress rule for CNI requirements.
 
@@ -796,7 +651,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkCniCniIn
     toPort: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkSubnetsItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkSubnetsItems0:
     r"""
     SubnetSpec configures an AWS Subnet.
 
@@ -889,7 +744,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkSubnetsI
     zoneType?: "availability-zone" | "local-zone" | "wavelength-zone"
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpc:
     r"""
     VPC configuration.
 
@@ -913,7 +768,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc:
         CidrBlock is the CIDR block to be used when the provider creates a managed VPC.
         Defaults to 10.0.0.0/16.
         Mutually exclusive with IPAMPool.
-    elasticIpPool : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcElasticIPPool, default is Undefined, optional
+    elasticIpPool : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcElasticIPPool, default is Undefined, optional
         elastic Ip pool
     emptyRoutesDefaultVPCSecurityGroup : bool, default is Undefined, optional
         EmptyRoutesDefaultVPCSecurityGroup specifies whether the default VPC security group ingress
@@ -928,15 +783,15 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc:
         ID is the vpc-id of the VPC this provider should use to create resources.
     internetGatewayId : str, default is Undefined, optional
         InternetGatewayID is the id of the internet gateway associated with the VPC.
-    ipamPool : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIpamPool, default is Undefined, optional
+    ipamPool : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIpamPool, default is Undefined, optional
         ipam pool
-    ipv6 : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6, default is Undefined, optional
+    ipv6 : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIPV6, default is Undefined, optional
         ipv6
     privateDnsHostnameTypeOnLaunch : str, default is Undefined, optional
         PrivateDNSHostnameTypeOnLaunch is the type of hostname to assign to instances in the subnet at launch.
         For IPv4-only and dual-stack (IPv4 and IPv6) subnets, an instance DNS name can be based on the instance IPv4 address (ip-name)
         or the instance ID (resource-name). For IPv6 only subnets, an instance DNS name must be based on the instance ID (resource-name).
-    secondaryCidrBlocks : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcSecondaryCidrBlocksItems0], default is Undefined, optional
+    secondaryCidrBlocks : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcSecondaryCidrBlocksItems0], default is Undefined, optional
         SecondaryCidrBlocks are additional CIDR blocks to be associated when the provider creates a managed VPC.
         Defaults to none. Mutually exclusive with IPAMPool. This makes sense to use if, for example, you want to use
         a separate IP range for pods (e.g. Cilium ENI mode).
@@ -959,7 +814,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc:
 
     cidrBlock?: str
 
-    elasticIpPool?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcElasticIPPool
+    elasticIpPool?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcElasticIPPool
 
     emptyRoutesDefaultVPCSecurityGroup?: bool
 
@@ -967,13 +822,13 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc:
 
     internetGatewayId?: str
 
-    ipamPool?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIpamPool
+    ipamPool?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIpamPool
 
-    ipv6?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6
+    ipv6?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIPV6
 
     privateDnsHostnameTypeOnLaunch?: "ip-name" | "resource-name"
 
-    secondaryCidrBlocks?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcSecondaryCidrBlocksItems0]
+    secondaryCidrBlocks?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcSecondaryCidrBlocksItems0]
 
     subnetSchema?: "PreferPrivate" | "PreferPublic" = "PreferPrivate"
 
@@ -984,7 +839,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpc:
         availabilityZoneUsageLimit >= 1 if availabilityZoneUsageLimit not in [None, Undefined]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcElasticIPPool:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcElasticIPPool:
     r"""
     ElasticIPPool contains specific configuration to allocate Public IPv4 address (Elastic IP) from user-defined pool
     brought to AWS for core infrastructure resources, like NAT Gateways and Public Network Load Balancers for
@@ -1017,7 +872,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcElast
         len(publicIpv4Pool) <= 30 if publicIpv4Pool not in [None, Undefined]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIPV6:
     r"""
     IPv6 contains ipv6 specific settings for the network.
 
@@ -1028,7 +883,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6:
         Mutually exclusive with IPAMPool.
     egressOnlyInternetGatewayId : str, default is Undefined, optional
         EgressOnlyInternetGatewayID is the id of the egress only internet gateway associated with an IPv6 enabled VPC.
-    ipamPool : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6IpamPool, default is Undefined, optional
+    ipamPool : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIPV6IpamPool, default is Undefined, optional
         ipam pool
     poolId : str, default is Undefined, optional
         PoolID is the IP pool which must be defined in case of BYO IP is defined.
@@ -1041,12 +896,12 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6:
 
     egressOnlyInternetGatewayId?: str
 
-    ipamPool?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6IpamPool
+    ipamPool?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIPV6IpamPool
 
     poolId?: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6IpamPool:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIPV6IpamPool:
     r"""
     IPAMPool defines the IPAMv6 pool to be used for VPC.
     Mutually exclusive with CidrBlock.
@@ -1072,7 +927,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIPV6I
     netmaskLength?: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIpamPool:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcIpamPool:
     r"""
     IPAMPool defines the IPAMv4 pool to be used for VPC.
     Mutually exclusive with CidrBlock.
@@ -1098,7 +953,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcIpamP
     netmaskLength?: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcSecondaryCidrBlocksItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecNetworkVpcSecondaryCidrBlocksItems0:
     r"""
     VpcCidrBlock defines the CIDR block and settings to associate with the managed VPC. Currently, only IPv4 is supported.
 
@@ -1116,9 +971,9 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecNetworkVpcSecon
         len(ipv4CidrBlock) >= 1
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecOidcIdentityProviderConfig:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecOidcIdentityProviderConfig:
     r"""
-    OIDCIdentityProviderConfig is used to specify the OIDC provider config
+    IdentityProviderconfig is used to specify the oidc provider config
     to be attached with this eks cluster
 
     Attributes
@@ -1185,36 +1040,29 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecOidcIdentityPro
     usernamePrefix?: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCni:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCni:
     r"""
     VpcCni is used to set configuration options for the VPC CNI plugin
 
     Attributes
     ----------
-    disable : bool, default is Undefined, optional
-        Disable indicates that the Amazon VPC CNI should be disabled. With EKS clusters the
-        Amazon VPC CNI is automatically installed into the cluster. For clusters where you want
-        to use an alternate CNI this option provides a way to specify that the Amazon VPC CNI
-        should be deleted. You cannot set this to true if you are using the
-        Amazon VPC CNI addon.
-    env : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0], default is Undefined, optional
+    env : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0], default is Undefined, optional
         Env defines a list of environment variables to apply to the `aws-node` DaemonSet
     """
 
 
-    disable?: bool = False
-
-    env?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0]
+    env?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0:
     r"""
     EnvVar represents an environment variable present in a Container.
 
     Attributes
     ----------
     name : str, default is Undefined, required
-        Name of the environment variable. Must be a C_IDENTIFIER.
+        Name of the environment variable.
+        May consist of any printable ASCII characters except '='.
     value : str, default is Undefined, optional
         Variable references $(VAR_NAME) are expanded
         using the previously defined environment variables in the container and
@@ -1225,7 +1073,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0
         Escaped references will never be expanded, regardless of whether the variable
         exists or not.
         Defaults to "".
-    valueFrom : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFrom, default is Undefined, optional
+    valueFrom : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFrom, default is Undefined, optional
         value from
     """
 
@@ -1234,36 +1082,40 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0
 
     value?: str
 
-    valueFrom?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFrom
+    valueFrom?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFrom
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFrom:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFrom:
     r"""
     Source for the environment variable's value. Cannot be used if value is not empty.
 
     Attributes
     ----------
-    configMapKeyRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromConfigMapKeyRef, default is Undefined, optional
+    configMapKeyRef : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromConfigMapKeyRef, default is Undefined, optional
         config map key ref
-    fieldRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFieldRef, default is Undefined, optional
+    fieldRef : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFieldRef, default is Undefined, optional
         field ref
-    resourceFieldRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromResourceFieldRef, default is Undefined, optional
+    fileKeyRef : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFileKeyRef, default is Undefined, optional
+        file key ref
+    resourceFieldRef : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromResourceFieldRef, default is Undefined, optional
         resource field ref
-    secretKeyRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromSecretKeyRef, default is Undefined, optional
+    secretKeyRef : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromSecretKeyRef, default is Undefined, optional
         secret key ref
     """
 
 
-    configMapKeyRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromConfigMapKeyRef
+    configMapKeyRef?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromConfigMapKeyRef
 
-    fieldRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFieldRef
+    fieldRef?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFieldRef
 
-    resourceFieldRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromResourceFieldRef
+    fileKeyRef?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFileKeyRef
 
-    secretKeyRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromSecretKeyRef
+    resourceFieldRef?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromResourceFieldRef
+
+    secretKeyRef?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromSecretKeyRef
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromConfigMapKeyRef:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromConfigMapKeyRef:
     r"""
     Selects a key of a ConfigMap.
 
@@ -1289,7 +1141,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0
     optional?: bool
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFieldRef:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFieldRef:
     r"""
     Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1308,7 +1160,43 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0
     fieldPath: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromResourceFieldRef:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromFileKeyRef:
+    r"""
+    FileKeyRef selects a key of the env file.
+    Requires the EnvFiles feature gate to be enabled.
+
+    Attributes
+    ----------
+    key : str, default is Undefined, required
+        The key within the env file. An invalid key will prevent the pod from starting.
+        The keys defined within a source may consist of any printable ASCII characters except '='.
+        During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    optional : bool, default is Undefined, optional
+        Specify whether the file or its key must be defined. If the file or key
+        does not exist, then the env var is not published.
+        If optional is set to true and the specified key does not exist,
+        the environment variable will not be set in the Pod's containers.
+
+        If optional is set to false and the specified key does not exist,
+        an error will be returned during Pod creation.
+    path : str, default is Undefined, required
+        The path within the volume from which to select the file.
+        Must be relative and may not contain the '..' path or start with '..'.
+    volumeName : str, default is Undefined, required
+        The name of the volume mount containing the env file.
+    """
+
+
+    key: str
+
+    optional?: bool = False
+
+    path: str
+
+    volumeName: str
+
+
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromResourceFieldRef:
     r"""
     Selects a resource of the container: only resources limits and requests
     (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
@@ -1335,7 +1223,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0
         _regex_match(str(divisor), r"^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$") if divisor
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromSecretKeyRef:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneSpecVpcCniEnvItems0ValueFromSecretKeyRef:
     r"""
     Selects a key of a secret in the pod's namespace
 
@@ -1361,70 +1249,69 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneSpecVpcCniEnvItems0
     optional?: bool
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatus:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatus:
     r"""
     AWSManagedControlPlaneStatus defines the observed state of an Amazon EKS Cluster.
 
     Attributes
     ----------
-    addons : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0], default is Undefined, optional
+    addons : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusAddonsItems0], default is Undefined, optional
         Addons holds the current status of the EKS addons
-    bastion : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion, default is Undefined, optional
+    bastion : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastion, default is Undefined, optional
         bastion
-    conditions : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusConditionsItems0], default is Undefined, optional
+    conditions : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusConditionsItems0], default is Undefined, optional
         Conditions specifies the cpnditions for the managed control plane
     externalManagedControlPlane : bool, default is True, optional
         ExternalManagedControlPlane indicates to cluster-api that the control plane
         is managed by an external service such as AKS, EKS, GKE, etc.
-    failureDomains : {str:ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusFailureDomainsAnon}, default is Undefined, optional
+    failureDomains : {str:ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusFailureDomainsAnon}, default is Undefined, optional
         FailureDomains specifies a list fo available availability zones that can be used
     failureMessage : str, default is Undefined, optional
         ErrorMessage indicates that there is a terminal problem reconciling the
         state, and will be set to a descriptive error message.
-    identityProviderStatus : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusIdentityProviderStatus, default is Undefined, optional
+    identityProviderStatus : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusIdentityProviderStatus, default is Undefined, optional
         identity provider status
     initialized : bool, default is Undefined, optional
         Initialized denotes whether or not the control plane has the
         uploaded kubernetes config-map.
-    networkStatus : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus, default is Undefined, optional
+    networkStatus : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatus, default is Undefined, optional
         network status
-    oidcProvider : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusOidcProvider, default is Undefined, optional
+    observedGeneration : int, default is Undefined, optional
+        ObservedGeneration is the latest generation observed by the controller.
+    oidcProvider : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusOidcProvider, default is Undefined, optional
         oidc provider
     ready : bool, default is Undefined, required
         Ready denotes that the AWSManagedControlPlane API Server is ready to
         receive requests and that the VPC infra is ready.
-    version : str, default is Undefined, optional
-        Version represents the minimum Kubernetes version for the control plane machines
-        in the cluster.
     """
 
 
-    addons?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0]
+    addons?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusAddonsItems0]
 
-    bastion?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion
+    bastion?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastion
 
-    conditions?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusConditionsItems0]
+    conditions?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusConditionsItems0]
 
     externalManagedControlPlane?: bool = True
 
-    failureDomains?: {str:ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusFailureDomainsAnon}
+    failureDomains?: {str:ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusFailureDomainsAnon}
 
     failureMessage?: str
 
-    identityProviderStatus?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusIdentityProviderStatus
+    identityProviderStatus?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusIdentityProviderStatus
 
     initialized?: bool
 
-    networkStatus?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
+    networkStatus?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatus
 
-    oidcProvider?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusOidcProvider
+    observedGeneration?: int
+
+    oidcProvider?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusOidcProvider
 
     ready: bool = False
 
-    version?: str
 
-
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusAddonsItems0:
     r"""
     AddonState represents the state of an addon.
 
@@ -1434,7 +1321,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0:
         ARN is the AWS ARN of the addon
     createdAt : str, default is Undefined, optional
         CreatedAt is the date and time the addon was created at
-    issues : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0IssuesItems0], default is Undefined, optional
+    issues : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusAddonsItems0IssuesItems0], default is Undefined, optional
         Issues is a list of issue associated with the addon
     modifiedAt : str, default is Undefined, optional
         ModifiedAt is the date and time the addon was last modified
@@ -1453,7 +1340,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0:
 
     createdAt?: str
 
-    issues?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0IssuesItems0]
+    issues?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusAddonsItems0IssuesItems0]
 
     modifiedAt?: str
 
@@ -1466,7 +1353,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0:
     version: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0IssuesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusAddonsItems0IssuesItems0:
     r"""
     AddonIssue represents an issue with an addon.
 
@@ -1488,13 +1375,13 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusAddonsItems0I
     resourceIds?: [str]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastion:
     r"""
     Bastion holds details of the instance that is used as a bastion jump box
 
     Attributes
     ----------
-    addresses : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionAddressesItems0], default is Undefined, optional
+    addresses : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionAddressesItems0], default is Undefined, optional
         Addresses contains the AWS instance associated addresses.
     assignPrimaryIPv6 : str, default is Undefined, optional
         AssignPrimaryIPv6 specifies whether to enable assigning a primary IPv6 address to the primary network Interface.
@@ -1507,9 +1394,9 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
         "Open": The instance may make use of open Capacity Reservations that match its AZ and InstanceType
         "None": The instance may not make use of any Capacity Reservations. This is to conserve open reservations for desired workloads
         "CapacityReservationsOnly": The instance will only run if matched or targeted to a Capacity Reservation. Note that this is incompatible with a MarketType of `Spot`
-    cpuOptions : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionCPUOptions, default is Undefined, optional
+    cpuOptions : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionCPUOptions, default is Undefined, optional
         cpu options
-    dynamicHostAllocation : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionDynamicHostAllocation, default is Undefined, optional
+    dynamicHostAllocation : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionDynamicHostAllocation, default is Undefined, optional
         dynamic host allocation
     ebsOptimized : bool, default is Undefined, optional
         Indicates whether the instance is optimized for Amazon EBS I/O.
@@ -1531,7 +1418,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
         id
     imageId : str, default is Undefined, optional
         The ID of the AMI used to launch the instance.
-    instanceMetadataOptions : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionInstanceMetadataOptions, default is Undefined, optional
+    instanceMetadataOptions : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionInstanceMetadataOptions, default is Undefined, optional
         instance metadata options
     instanceState : str, default is Undefined, optional
         The current state of the instance.
@@ -1548,7 +1435,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
         NetworkInterfaceType is the interface type of the primary network Interface.
     networkInterfaces : [str], default is Undefined, optional
         Specifies ENIs attached to instance
-    nonRootVolumes : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionNonRootVolumesItems0], default is Undefined, optional
+    nonRootVolumes : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionNonRootVolumesItems0], default is Undefined, optional
         Configuration options for the non root storage volumes.
     placementGroupName : str, default is Undefined, optional
         PlacementGroupName specifies the name of the placement group in which to launch the instance.
@@ -1556,7 +1443,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
         PlacementGroupPartition is the partition number within the placement group in which to launch the instance.
         This value is only valid if the placement group, referred in `PlacementGroupName`, was created with
         strategy set to partition.
-    privateDnsName : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionPrivateDNSName, default is Undefined, optional
+    privateDnsName : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionPrivateDNSName, default is Undefined, optional
         private Dns name
     privateIp : str, default is Undefined, optional
         The private IPv4 address assigned to the instance.
@@ -1564,11 +1451,11 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
         PublicIPOnLaunch is the option to associate a public IP on instance launch
     publicIp : str, default is Undefined, optional
         The public IPv4 address assigned to the instance, if applicable.
-    rootVolume : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionRootVolume, default is Undefined, optional
+    rootVolume : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionRootVolume, default is Undefined, optional
         root volume
     securityGroupIds : [str], default is Undefined, optional
         SecurityGroupIDs are one or more security group IDs this instance belongs to.
-    spotMarketOptions : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionSpotMarketOptions, default is Undefined, optional
+    spotMarketOptions : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionSpotMarketOptions, default is Undefined, optional
         spot market options
     sshKeyName : str, default is Undefined, optional
         The name of the SSH key pair.
@@ -1588,7 +1475,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
     """
 
 
-    addresses?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionAddressesItems0]
+    addresses?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionAddressesItems0]
 
     assignPrimaryIPv6?: str
 
@@ -1598,9 +1485,9 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
 
     capacityReservationPreference?: str
 
-    cpuOptions?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionCPUOptions
+    cpuOptions?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionCPUOptions
 
-    dynamicHostAllocation?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionDynamicHostAllocation
+    dynamicHostAllocation?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionDynamicHostAllocation
 
     ebsOptimized?: bool
 
@@ -1616,7 +1503,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
 
     imageId?: str
 
-    instanceMetadataOptions?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionInstanceMetadataOptions
+    instanceMetadataOptions?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionInstanceMetadataOptions
 
     instanceState?: str
 
@@ -1628,13 +1515,13 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
 
     networkInterfaces?: [str]
 
-    nonRootVolumes?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionNonRootVolumesItems0]
+    nonRootVolumes?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionNonRootVolumesItems0]
 
     placementGroupName?: str
 
     placementGroupPartition?: int
 
-    privateDnsName?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionPrivateDNSName
+    privateDnsName?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionPrivateDNSName
 
     privateIp?: str
 
@@ -1642,11 +1529,11 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
 
     publicIp?: str
 
-    rootVolume?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionRootVolume
+    rootVolume?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionRootVolume
 
     securityGroupIds?: [str]
 
-    spotMarketOptions?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionSpotMarketOptions
+    spotMarketOptions?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionSpotMarketOptions
 
     sshKeyName?: str
 
@@ -1668,7 +1555,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastion:
         placementGroupPartition >= 1 if placementGroupPartition not in [None, Undefined]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionAddressesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionAddressesItems0:
     r"""
     MachineAddress contains information for the node's address.
 
@@ -1691,7 +1578,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionAddres
         len(address) >= 1
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionCPUOptions:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionCPUOptions:
     r"""
     CPUOptions defines CPU-related settings for the instance, including the confidential computing policy.
     When omitted, this means no opinion and the AWS platform is left to choose a reasonable default.
@@ -1723,7 +1610,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionCPUOpt
     nestedVirtualization?: "enabled" | "disabled"
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionDynamicHostAllocation:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionDynamicHostAllocation:
     r"""
     DynamicHostAllocation enables automatic allocation of dedicated hosts.
     This field is mutually exclusive with HostID.
@@ -1738,7 +1625,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionDynami
     tags?: {str:str}
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionInstanceMetadataOptions:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionInstanceMetadataOptions:
     r"""
     InstanceMetadataOptions is the metadata options for the EC2 instance.
 
@@ -1801,7 +1688,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionInstan
         httpPutResponseHopLimit >= 1 if httpPutResponseHopLimit not in [None, Undefined]
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionNonRootVolumesItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionNonRootVolumesItems0:
     r"""
     Volume encapsulates the configuration options for the storage device.
 
@@ -1846,7 +1733,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionNonRoo
         size >= 8
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionPrivateDNSName:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionPrivateDNSName:
     r"""
     PrivateDNSName is the options for the instance hostname.
 
@@ -1868,7 +1755,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionPrivat
     hostnameType?: "ip-name" | "resource-name"
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionRootVolume:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionRootVolume:
     r"""
     Configuration options for the root storage volume.
 
@@ -1913,7 +1800,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionRootVo
         size >= 8
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionSpotMarketOptions:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusBastionSpotMarketOptions:
     r"""
     SpotMarketOptions option for configuring instances to be run using AWS Spot instances.
 
@@ -1927,7 +1814,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusBastionSpotMa
     maxPrice?: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusConditionsItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusConditionsItems0:
     r"""
     Condition defines an observation of a Cluster API resource operational state.
 
@@ -1980,7 +1867,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusConditionsIte
         len($type) >= 1
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusFailureDomainsAnon:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusFailureDomainsAnon:
     r"""
     FailureDomainSpec is the Schema for Cluster API failure domains.
     It allows controllers to understand how many failure domains a cluster can optionally span across.
@@ -1999,7 +1886,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusFailureDomain
     controlPlane?: bool
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusIdentityProviderStatus:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusIdentityProviderStatus:
     r"""
     IdentityProviderStatus holds the status for
     associated identity provider
@@ -2018,33 +1905,33 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusIdentityProvi
     status?: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatus:
     r"""
     Networks holds details about the AWS networking resources used by the control plane
 
     Attributes
     ----------
-    apiServerElb : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElb, default is Undefined, optional
+    apiServerElb : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElb, default is Undefined, optional
         api server elb
     natGatewaysIPs : [str], default is Undefined, optional
         NatGatewaysIPs contains the public IPs of the NAT Gateways
-    secondaryAPIServerELB : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELB, default is Undefined, optional
+    secondaryAPIServerELB : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELB, default is Undefined, optional
         secondary API server e l b
-    securityGroups : {str:ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnon}, default is Undefined, optional
+    securityGroups : {str:ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnon}, default is Undefined, optional
         SecurityGroups is a map from the role/kind of the security group to its unique name, if any.
     """
 
 
-    apiServerElb?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElb
+    apiServerElb?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElb
 
     natGatewaysIPs?: [str]
 
-    secondaryAPIServerELB?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELB
+    secondaryAPIServerELB?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELB
 
-    securityGroups?: {str:ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnon}
+    securityGroups?: {str:ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnon}
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElb:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElb:
     r"""
     APIServerELB is the Kubernetes api server load balancer.
 
@@ -2053,7 +1940,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     arn : str, default is Undefined, optional
         ARN of the load balancer. Unlike the ClassicLB, ARN is used mostly
         to define and get it.
-    attributes : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbAttributes, default is Undefined, optional
+    attributes : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbAttributes, default is Undefined, optional
         attributes
     availabilityZones : [str], default is Undefined, optional
         AvailabilityZones is an array of availability zones in the VPC attached to the load balancer.
@@ -2061,11 +1948,11 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         DNSName is the dns name of the load balancer.
     elbAttributes : {str:str}, default is Undefined, optional
         ELBAttributes defines extra attributes associated with v2 load balancers.
-    elbListeners : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0], default is Undefined, optional
+    elbListeners : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0], default is Undefined, optional
         ELBListeners is an array of listeners associated with the load balancer. There must be at least one.
-    healthChecks : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbHealthChecks, default is Undefined, optional
+    healthChecks : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbHealthChecks, default is Undefined, optional
         health checks
-    listeners : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbListenersItems0], default is Undefined, optional
+    listeners : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbListenersItems0], default is Undefined, optional
         ClassicELBListeners is an array of classic elb listeners associated with the load balancer. There must be at least one.
     loadBalancerIPAddressType : str, default is Undefined, optional
         LoadBalancerIPAddressType specifies the IP address type for the load balancer.
@@ -2087,7 +1974,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     arn?: str
 
-    attributes?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbAttributes
+    attributes?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbAttributes
 
     availabilityZones?: [str]
 
@@ -2095,11 +1982,11 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     elbAttributes?: {str:str}
 
-    elbListeners?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0]
+    elbListeners?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0]
 
-    healthChecks?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbHealthChecks
+    healthChecks?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbHealthChecks
 
-    listeners?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbListenersItems0]
+    listeners?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbListenersItems0]
 
     loadBalancerIPAddressType?: "ipv4" | "dualstack" | "dualstack-without-public-ipv4"
 
@@ -2116,7 +2003,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     tags?: {str:str}
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbAttributes:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbAttributes:
     r"""
     ClassicElbAttributes defines extra attributes associated with the load balancer.
 
@@ -2135,7 +2022,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     idleTimeout?: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0:
     r"""
     Listener defines an AWS network load balancer listener.
 
@@ -2145,7 +2032,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         port
     $protocol : str, default is Undefined, required
         ELBProtocol defines listener protocols for a load balancer.
-    targetGroup : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroup, default is Undefined, required
+    targetGroup : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroup, default is Undefined, required
         target group
     """
 
@@ -2154,10 +2041,10 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     $protocol: str
 
-    targetGroup: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroup
+    targetGroup: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroup
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroup:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroup:
     r"""
     TargetGroupSpec specifies target group settings for a given listener.
     This is created first, and the ARN is then passed to the listener.
@@ -2172,7 +2059,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         Port is the exposed port
     $protocol : str, default is Undefined, required
         ELBProtocol defines listener protocols for a load balancer.
-    targetGroupHealthCheck : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroupTargetGroupHealthCheck, default is Undefined, optional
+    targetGroupHealthCheck : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroupTargetGroupHealthCheck, default is Undefined, optional
         target group health check
     vpcId : str, default is Undefined, required
         vpc Id
@@ -2187,7 +2074,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     $protocol: "tcp" | "tls" | "udp" | "TCP" | "TLS" | "UDP"
 
-    targetGroupHealthCheck?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroupTargetGroupHealthCheck
+    targetGroupHealthCheck?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroupTargetGroupHealthCheck
 
     vpcId: str
 
@@ -2196,7 +2083,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         len(name) <= 32
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroupTargetGroupHealthCheck:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbElbListenersItems0TargetGroupTargetGroupHealthCheck:
     r"""
     HealthCheck is the elb health check associated with the load balancer.
 
@@ -2234,7 +2121,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     unhealthyThresholdCount?: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbHealthChecks:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbHealthChecks:
     r"""
     HealthCheck is the classic elb health check associated with the load balancer.
 
@@ -2268,7 +2155,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     unhealthyThreshold: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusAPIServerElbListenersItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusAPIServerElbListenersItems0:
     r"""
     ClassicELBListener defines an AWS classic load balancer listener.
 
@@ -2294,7 +2181,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     $protocol: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELB:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELB:
     r"""
     SecondaryAPIServerELB is the secondary Kubernetes api server load balancer.
 
@@ -2303,7 +2190,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     arn : str, default is Undefined, optional
         ARN of the load balancer. Unlike the ClassicLB, ARN is used mostly
         to define and get it.
-    attributes : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBAttributes, default is Undefined, optional
+    attributes : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBAttributes, default is Undefined, optional
         attributes
     availabilityZones : [str], default is Undefined, optional
         AvailabilityZones is an array of availability zones in the VPC attached to the load balancer.
@@ -2311,11 +2198,11 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         DNSName is the dns name of the load balancer.
     elbAttributes : {str:str}, default is Undefined, optional
         ELBAttributes defines extra attributes associated with v2 load balancers.
-    elbListeners : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0], default is Undefined, optional
+    elbListeners : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0], default is Undefined, optional
         ELBListeners is an array of listeners associated with the load balancer. There must be at least one.
-    healthChecks : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBHealthChecks, default is Undefined, optional
+    healthChecks : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBHealthChecks, default is Undefined, optional
         health checks
-    listeners : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBListenersItems0], default is Undefined, optional
+    listeners : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBListenersItems0], default is Undefined, optional
         ClassicELBListeners is an array of classic elb listeners associated with the load balancer. There must be at least one.
     loadBalancerIPAddressType : str, default is Undefined, optional
         LoadBalancerIPAddressType specifies the IP address type for the load balancer.
@@ -2337,7 +2224,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     arn?: str
 
-    attributes?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBAttributes
+    attributes?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBAttributes
 
     availabilityZones?: [str]
 
@@ -2345,11 +2232,11 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     elbAttributes?: {str:str}
 
-    elbListeners?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0]
+    elbListeners?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0]
 
-    healthChecks?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBHealthChecks
+    healthChecks?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBHealthChecks
 
-    listeners?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBListenersItems0]
+    listeners?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBListenersItems0]
 
     loadBalancerIPAddressType?: "ipv4" | "dualstack" | "dualstack-without-public-ipv4"
 
@@ -2366,7 +2253,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     tags?: {str:str}
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBAttributes:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBAttributes:
     r"""
     ClassicElbAttributes defines extra attributes associated with the load balancer.
 
@@ -2385,7 +2272,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     idleTimeout?: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0:
     r"""
     Listener defines an AWS network load balancer listener.
 
@@ -2395,7 +2282,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         port
     $protocol : str, default is Undefined, required
         ELBProtocol defines listener protocols for a load balancer.
-    targetGroup : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroup, default is Undefined, required
+    targetGroup : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroup, default is Undefined, required
         target group
     """
 
@@ -2404,10 +2291,10 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     $protocol: str
 
-    targetGroup: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroup
+    targetGroup: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroup
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroup:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroup:
     r"""
     TargetGroupSpec specifies target group settings for a given listener.
     This is created first, and the ARN is then passed to the listener.
@@ -2422,7 +2309,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         Port is the exposed port
     $protocol : str, default is Undefined, required
         ELBProtocol defines listener protocols for a load balancer.
-    targetGroupHealthCheck : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroupTargetGroupHealthCheck, default is Undefined, optional
+    targetGroupHealthCheck : ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroupTargetGroupHealthCheck, default is Undefined, optional
         target group health check
     vpcId : str, default is Undefined, required
         vpc Id
@@ -2437,7 +2324,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     $protocol: "tcp" | "tls" | "udp" | "TCP" | "TLS" | "UDP"
 
-    targetGroupHealthCheck?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroupTargetGroupHealthCheck
+    targetGroupHealthCheck?: ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroupTargetGroupHealthCheck
 
     vpcId: str
 
@@ -2446,7 +2333,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
         len(name) <= 32
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroupTargetGroupHealthCheck:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBElbListenersItems0TargetGroupTargetGroupHealthCheck:
     r"""
     HealthCheck is the elb health check associated with the load balancer.
 
@@ -2484,7 +2371,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     unhealthyThresholdCount?: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBHealthChecks:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBHealthChecks:
     r"""
     HealthCheck is the classic elb health check associated with the load balancer.
 
@@ -2518,7 +2405,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     unhealthyThreshold: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBListenersItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecondaryAPIServerELBListenersItems0:
     r"""
     ClassicELBListener defines an AWS classic load balancer listener.
 
@@ -2544,7 +2431,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     $protocol: str
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnon:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnon:
     r"""
     SecurityGroup defines an AWS security group.
 
@@ -2552,7 +2439,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     ----------
     id : str, default is Undefined, required
         ID is a unique identifier.
-    ingressRule : [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnonIngressRuleItems0], default is Undefined, optional
+    ingressRule : [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnonIngressRuleItems0], default is Undefined, optional
         IngressRules is the inbound rules associated with the security group.
     name : str, default is Undefined, required
         Name is the security group name.
@@ -2563,14 +2450,14 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
 
     id: str
 
-    ingressRule?: [ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnonIngressRuleItems0]
+    ingressRule?: [ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnonIngressRuleItems0]
 
     name: str
 
     tags?: {str:str}
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnonIngressRuleItems0:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusNetworkStatusSecurityGroupsAnonIngressRuleItems0:
     r"""
     IngressRule defines an AWS ingress rule for security groups.
 
@@ -2617,7 +2504,7 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusNetworkStatus
     toPort: int
 
 
-schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneStatusOidcProvider:
+schema ControlplaneClusterxK8sIoV1beta1AWSManagedControlPlaneStatusOidcProvider:
     r"""
     OIDCProvider holds the status of the identity provider for this cluster
 

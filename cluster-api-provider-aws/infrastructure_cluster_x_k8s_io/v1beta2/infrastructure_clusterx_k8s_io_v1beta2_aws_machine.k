@@ -253,6 +253,11 @@ schema InfrastructureClusterxK8sIoV1beta2AWSMachineSpec:
         placementGroupPartition >= 1 if placementGroupPartition not in [None, Undefined]
 
 
+        # capacityReservationId may not be set when marketType is Spot
+        ((not ((capacityReservationId != None)) or not ((marketType != None))) or (marketType != "Spot"))
+        # capacityReservationId cannot be set when spotMarketOptions is specified
+        (not ((capacityReservationId != None)) or not ((spotMarketOptions != None)))
+
 schema InfrastructureClusterxK8sIoV1beta2AWSMachineSpecAdditionalSecurityGroupsItems0:
     r"""
     AWSResourceReference is a reference to a specific AWS resource by ID or filters.

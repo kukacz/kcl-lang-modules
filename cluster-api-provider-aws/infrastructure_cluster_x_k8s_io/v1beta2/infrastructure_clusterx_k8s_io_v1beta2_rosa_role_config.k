@@ -81,6 +81,13 @@ schema InfrastructureClusterxK8sIoV1beta2ROSARoleConfigSpecAccountRoleConfig:
         User-defined prefix for all generated AWS account role
     sharedVPCConfig : InfrastructureClusterxK8sIoV1beta2ROSARoleConfigSpecAccountRoleConfigSharedVPCConfig, default is Undefined, optional
         shared v p c config
+    trustPolicyExternalID : str, default is Undefined, optional
+        TrustPolicyExternalID is an optional STS external ID that OCM will use when assuming
+        the installer and support account roles. When set, the controller embeds an
+        sts:ExternalId condition in the installer and support roles' trust policies, and
+        passes the value to OCM for cluster creation.
+        Worker roles are not affected.
+        Must be 2–1224 characters matching [a-zA-Z0-9=,.@:/-]+ per AWS STS requirements.
     version : str, default is Undefined, required
         Version of OpenShift that will be used to the roles tag in formate of x.y.z example; "4.19.0"
         Setting the role OpenShift version tag does not affect the associated ROSAControlplane version.
@@ -95,12 +102,17 @@ schema InfrastructureClusterxK8sIoV1beta2ROSARoleConfigSpecAccountRoleConfig:
 
     sharedVPCConfig?: InfrastructureClusterxK8sIoV1beta2ROSARoleConfigSpecAccountRoleConfigSharedVPCConfig
 
+    trustPolicyExternalID?: str
+
     version: str
 
 
     check:
         len(prefix) <= 4
         _regex_match(str(prefix), r"^[a-z]([-a-z0-9]*[a-z0-9])?$")
+        len(trustPolicyExternalID) <= 1224 if trustPolicyExternalID not in [None, Undefined]
+        len(trustPolicyExternalID) >= 2 if trustPolicyExternalID not in [None, Undefined]
+        _regex_match(str(trustPolicyExternalID), r"^[a-zA-Z0-9=,.@:\/-]+$") if trustPolicyExternalID
 
 
 schema InfrastructureClusterxK8sIoV1beta2ROSARoleConfigSpecAccountRoleConfigSharedVPCConfig:

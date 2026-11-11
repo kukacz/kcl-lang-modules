@@ -77,11 +77,21 @@ schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpec:
         credentials secret ref
     defaultMachinePoolSpec : ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpecDefaultMachinePoolSpec, default is Undefined, optional
         default machine pool spec
+    deleteProtection : str, default is "Disabled", optional
+        DeleteProtection prevents accidental ROSA cluster deletion.
+        When set to "Enabled", the ROSA cluster cannot be deleted through OCM.
+        Defaults to "Disabled".
     domainPrefix : str, default is Undefined, optional
         DomainPrefix is an optional prefix added to the cluster's domain name. It will be used
         when generating a sub-domain for the cluster on openshiftapps domain. It must be valid DNS-1035 label
         consisting of lower case alphanumeric characters or '-', start with an alphabetic character
         end with an alphanumeric character and have a max length of 15 characters.
+    ec2MetadataHttpTokens : str, default is Undefined, optional
+        Ec2MetadataHTTPTokens configures the use of IMDSv2 for EC2 instances.
+        When set to "required", IMDSv2 is enforced and the older IMDSv1 is disabled.
+        When set to "optional", both IMDSv1 and IMDSv2 are allowed.
+        When omitted, the OCM default ("optional") is used.
+        This field is immutable and cannot be changed after cluster creation.
     enableExternalAuthProviders : bool, default is Undefined, optional
         EnableExternalAuthProviders enables external authentication configuration for the cluster.
     endpointAccess : str, default is "Public", optional
@@ -138,6 +148,16 @@ schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpec:
         SupportRoleARN is an AWS IAM role used by Red Hat SREs to enable
         access to the cluster account in order to provide support.
         Required if RosaRoleConfigRef is not specified.
+    trustPolicyExternalID : str, default is Undefined, optional
+        TrustPolicyExternalID is an optional STS external ID that OCM will use when assuming
+        the installer and support account roles.
+        When using RosaRoleConfigRef, this field is ignored, the value is always read from
+        the ROSARoleConfig, which owns the trust policies.
+        When providing role ARNs directly (no RosaRoleConfigRef), the user is responsible for
+        including the sts:ExternalId condition in the roles' trust policies; this field only
+        tells OCM which external ID to present when assuming the roles.
+        Worker roles are not affected.
+        Must be 2–1224 characters matching [a-zA-Z0-9=,.@:/-]+ per AWS STS requirements.
     version : str, default is Undefined, required
         OpenShift semantic version, for example "4.14.5".
     versionGate : str, default is "WaitForAcknowledge", required
@@ -176,7 +196,11 @@ schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpec:
 
     defaultMachinePoolSpec?: ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpecDefaultMachinePoolSpec
 
+    deleteProtection?: "Enabled" | "Disabled" = "Disabled"
+
     domainPrefix?: str
+
+    ec2MetadataHttpTokens?: "optional" | "required"
 
     enableExternalAuthProviders?: bool = False
 
@@ -214,6 +238,8 @@ schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpec:
 
     supportRoleARN?: str
 
+    trustPolicyExternalID?: str
+
     version: str
 
     versionGate: "Acknowledge" | "WaitForAcknowledge" | "AlwaysAcknowledge" = "WaitForAcknowledge"
@@ -228,6 +254,9 @@ schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpec:
         len(externalAuthProviders) <= 1 if externalAuthProviders
         len(rosaClusterName) <= 54
         _regex_match(str(rosaClusterName), r"^[a-z]([-a-z0-9]*[a-z0-9])?$")
+        len(trustPolicyExternalID) <= 1224 if trustPolicyExternalID not in [None, Undefined]
+        len(trustPolicyExternalID) >= 2 if trustPolicyExternalID not in [None, Undefined]
+        _regex_match(str(trustPolicyExternalID), r"^[a-zA-Z0-9=,.@:\/-]+$") if trustPolicyExternalID
 
 
 schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpecAutoNode:
@@ -364,20 +393,20 @@ schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpecControlPlaneEndpoint:
 
     Attributes
     ----------
-    host : str, default is Undefined, required
+    host : str, default is Undefined, optional
         host is the hostname on which the API server is serving.
-    port : int, default is Undefined, required
+    port : int, default is Undefined, optional
         port is the port on which the API server is serving.
     """
 
 
-    host: str
+    host?: str
 
-    port: int
+    port?: int
 
 
     check:
-        len(host) <= 512
+        len(host) <= 512 if host not in [None, Undefined]
 
 
 schema ControlplaneClusterxK8sIoV1beta2ROSAControlPlaneSpecCredentialsSecretRef:

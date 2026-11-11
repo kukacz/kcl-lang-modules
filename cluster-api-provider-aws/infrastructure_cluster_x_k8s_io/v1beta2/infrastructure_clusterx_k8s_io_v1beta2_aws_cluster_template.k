@@ -216,20 +216,20 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecContr
 
     Attributes
     ----------
-    host : str, default is Undefined, required
+    host : str, default is Undefined, optional
         host is the hostname on which the API server is serving.
-    port : int, default is Undefined, required
+    port : int, default is Undefined, optional
         port is the port on which the API server is serving.
     """
 
 
-    host: str
+    host?: str
 
-    port: int
+    port?: int
 
 
     check:
-        len(host) <= 512
+        len(host) <= 512 if host not in [None, Undefined]
 
 
 schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecControlPlaneLoadBalancer:
@@ -256,6 +256,10 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecContr
     disableHostsRewrite : bool, default is Undefined, optional
         DisableHostsRewrite disabled the hair pinning issue solution that adds the NLB's address as 127.0.0.1 to the hosts
         file of each instance. This is by default, false.
+    dnsResolutionCheck : str, default is Undefined, optional
+        DNSResolutionCheck configures the behavior for checking the load balancer DNS resolution.
+        Set to "None" to disable the check.
+        If omitted, the DNS resolution check is enabled.
     healthCheck : InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecControlPlaneLoadBalancerHealthCheck, default is Undefined, optional
         health check
     healthCheckProtocol : str, default is Undefined, optional
@@ -293,6 +297,8 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecContr
     crossZoneLoadBalancing?: bool
 
     disableHostsRewrite?: bool
+
+    dnsResolutionCheck?: "None" | "Enabled"
 
     healthCheck?: InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecControlPlaneLoadBalancerHealthCheck
 
@@ -1025,6 +1031,11 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecS3Buc
 
     Attributes
     ----------
+    additionalIAMRoles : [InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecS3BucketAdditionalIAMRolesItems0], default is Undefined, optional
+        AdditionalIAMRoles is a list of additional IAM roles
+        with custom S3 prefixes for accessing bootstrap data.
+        This is useful for custom node pools (e.g., Karpenter) that need access
+        to bootstrap data stored under custom prefixes.
     bestEffortDeleteObjects : bool, default is Undefined, optional
         BestEffortDeleteObjects defines whether access/permission errors during object deletion should be ignored.
     controlPlaneIAMInstanceProfile : str, default is Undefined, optional
@@ -1045,6 +1056,8 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecS3Buc
     """
 
 
+    additionalIAMRoles?: [InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecS3BucketAdditionalIAMRolesItems0]
+
     bestEffortDeleteObjects?: bool
 
     controlPlaneIAMInstanceProfile?: str
@@ -1060,6 +1073,38 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecS3Buc
         len(name) <= 63
         len(name) >= 3
         _regex_match(str(name), r"^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$")
+
+
+schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecS3BucketAdditionalIAMRolesItems0:
+    r"""
+    AdditionalIAMRole defines an additional IAM role
+    with a custom S3 prefix for accessing bootstrap data from S3 Bucket.
+    This enables support for custom node pools (e.g., Karpenter) that need
+    access to bootstrap data with custom S3 prefixes.
+
+    Attributes
+    ----------
+    name : str, default is Undefined, required
+        Name is the name of the IAM role that will be granted access.
+        This must match the IAM role name (not the ARN).
+    prefix : str, default is Undefined, required
+        Prefix is the S3 object key prefix (path) this role is granted access to.
+        It is appended to the bucket in the policy's resource ARN, so use a trailing "/*"
+        for wildcard access to a path (e.g. "karpenter-nodes/*") or "*" for the whole bucket.
+    """
+
+
+    name: str
+
+    prefix: str
+
+
+    check:
+        len(name) <= 128
+        len(name) >= 1
+        _regex_match(str(name), r"^[\w+=,.@-]+$")
+        len(prefix) <= 512
+        len(prefix) >= 1
 
 
 schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecSecondaryControlPlaneLoadBalancer:
@@ -1089,6 +1134,10 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecSecon
     disableHostsRewrite : bool, default is Undefined, optional
         DisableHostsRewrite disabled the hair pinning issue solution that adds the NLB's address as 127.0.0.1 to the hosts
         file of each instance. This is by default, false.
+    dnsResolutionCheck : str, default is Undefined, optional
+        DNSResolutionCheck configures the behavior for checking the load balancer DNS resolution.
+        Set to "None" to disable the check.
+        If omitted, the DNS resolution check is enabled.
     healthCheck : InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecSecondaryControlPlaneLoadBalancerHealthCheck, default is Undefined, optional
         health check
     healthCheckProtocol : str, default is Undefined, optional
@@ -1126,6 +1175,8 @@ schema InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecSecon
     crossZoneLoadBalancing?: bool
 
     disableHostsRewrite?: bool
+
+    dnsResolutionCheck?: "None" | "Enabled"
 
     healthCheck?: InfrastructureClusterxK8sIoV1beta2AWSClusterTemplateSpecTemplateSpecSecondaryControlPlaneLoadBalancerHealthCheck
 

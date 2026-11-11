@@ -445,20 +445,20 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplat
 
     Attributes
     ----------
-    host : str, default is Undefined, required
+    host : str, default is Undefined, optional
         host is the hostname on which the API server is serving.
-    port : int, default is Undefined, required
+    port : int, default is Undefined, optional
         port is the port on which the API server is serving.
     """
 
 
-    host: str
+    host?: str
 
-    port: int
+    port?: int
 
 
     check:
-        len(host) <= 512
+        len(host) <= 512 if host not in [None, Undefined]
 
 
 schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecEncryptionConfig:
@@ -1238,7 +1238,8 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplat
     Attributes
     ----------
     name : str, default is Undefined, required
-        Name of the environment variable. Must be a C_IDENTIFIER.
+        Name of the environment variable.
+        May consist of any printable ASCII characters except '='.
     value : str, default is Undefined, optional
         Variable references $(VAR_NAME) are expanded
         using the previously defined environment variables in the container and
@@ -1271,6 +1272,8 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplat
         config map key ref
     fieldRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromFieldRef, default is Undefined, optional
         field ref
+    fileKeyRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromFileKeyRef, default is Undefined, optional
+        file key ref
     resourceFieldRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromResourceFieldRef, default is Undefined, optional
         resource field ref
     secretKeyRef : ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromSecretKeyRef, default is Undefined, optional
@@ -1281,6 +1284,8 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplat
     configMapKeyRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromConfigMapKeyRef
 
     fieldRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromFieldRef
+
+    fileKeyRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromFileKeyRef
 
     resourceFieldRef?: ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromResourceFieldRef
 
@@ -1330,6 +1335,42 @@ schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplat
     apiVersion?: str
 
     fieldPath: str
+
+
+schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromFileKeyRef:
+    r"""
+    FileKeyRef selects a key of the env file.
+    Requires the EnvFiles feature gate to be enabled.
+
+    Attributes
+    ----------
+    key : str, default is Undefined, required
+        The key within the env file. An invalid key will prevent the pod from starting.
+        The keys defined within a source may consist of any printable ASCII characters except '='.
+        During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    optional : bool, default is Undefined, optional
+        Specify whether the file or its key must be defined. If the file or key
+        does not exist, then the env var is not published.
+        If optional is set to true and the specified key does not exist,
+        the environment variable will not be set in the Pod's containers.
+
+        If optional is set to false and the specified key does not exist,
+        an error will be returned during Pod creation.
+    path : str, default is Undefined, required
+        The path within the volume from which to select the file.
+        Must be relative and may not contain the '..' path or start with '..'.
+    volumeName : str, default is Undefined, required
+        The name of the volume mount containing the env file.
+    """
+
+
+    key: str
+
+    optional?: bool = False
+
+    path: str
+
+    volumeName: str
 
 
 schema ControlplaneClusterxK8sIoV1beta2AWSManagedControlPlaneTemplateSpecTemplateSpecVpcCniEnvItems0ValueFromResourceFieldRef:
