@@ -62,7 +62,9 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3MachineSpec:
         network data
     providerID : str, default is Undefined, optional
         ProviderID will be the Metal3 machine in ProviderID format
-        (metal3://<bmh-uuid>)
+        (metal3://<namespace>/<bmh-name>/<m3m-name>).
+        The legacy format (metal3://<bmh-uuid>) will be deprecated in CAPM3 v1.13
+        and removed in CAPM3 v1.14.
     userData : InfrastructureClusterxK8sIoV1beta1Metal3MachineSpecUserData, default is Undefined, optional
         user data
     """
@@ -205,8 +207,9 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3MachineSpecImage:
 
     Attributes
     ----------
-    checksum : str, default is Undefined, required
+    checksum : str, default is Undefined, optional
         Checksum is a md5sum, sha256sum or sha512sum value or a URL to retrieve one.
+        Optional for live-iso and oci:// URLs; required otherwise.
     checksumType : str, default is Undefined, optional
         ChecksumType is the checksum algorithm for the image.
         e.g md5, sha256, sha512
@@ -217,7 +220,7 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3MachineSpecImage:
     """
 
 
-    checksum: str
+    checksum?: str
 
     checksumType?: "md5" | "sha256" | "sha512"
 

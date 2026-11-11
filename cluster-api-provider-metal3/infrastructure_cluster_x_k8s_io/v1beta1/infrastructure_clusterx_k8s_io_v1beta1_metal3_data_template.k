@@ -184,7 +184,9 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecMetaDataFromHostI
 
     Attributes
     ----------
-    interface : str, default is Undefined, required
+    fromBootMAC : bool, default is Undefined, optional
+        FromBootMAC will fetch the MAC address from the BareMetalHost Spec BootMACAddress field.
+    interface : str, default is Undefined, optional
         Interface is the name of the interface in the BareMetalHost Status Hardware
         Details list of interfaces from which to fetch the MAC address.
     key : str, default is Undefined, required
@@ -192,7 +194,9 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecMetaDataFromHostI
     """
 
 
-    interface: str
+    fromBootMAC?: bool
+
+    interface?: str
 
     key: str
 
@@ -442,6 +446,10 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksB
         mac address
     mtu : int, default is 1500, optional
         MTU is the MTU of the interface
+    name : str, default is Undefined, optional
+        Name is the interface name to be used by cloud-init. When combined with
+        MACAddress, cloud-init will rename the interface matching the MAC to this name.
+        When MACAddress is omitted, cloud-init will use this name directly.
     parameters : {str:any}, default is Undefined, optional
         params blob passed without any validation/modifications into cloud-init config
     """
@@ -459,11 +467,15 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksB
 
     mtu?: int = 1500
 
+    name?: str
+
     parameters?: {str:any}
 
 
     check:
         mtu <= 9000 if mtu not in [None, Undefined]
+        len(name) <= 15 if name not in [None, Undefined]
+        _regex_match(str(name), r"^[a-zA-Z][a-zA-Z0-9._-]*$") if name
 
 
 schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksBondsItems0MacAddress:
@@ -521,6 +533,10 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksE
         mac address
     mtu : int, default is 1500, optional
         MTU is the MTU of the interface
+    name : str, default is Undefined, optional
+        Name is the interface name to be used by cloud-init. When combined with
+        MACAddress, cloud-init will rename the interface matching the MAC to this name.
+        When MACAddress is omitted, cloud-init will use this name directly.
     $type : str, default is Undefined, required
         Type is the type of the ethernet link. It can be one of:
         bridge, dvs, hw_veb, hyperv, ovs, tap, vhostuser, vif, phy
@@ -533,11 +549,15 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksE
 
     mtu?: int = 1500
 
+    name?: str
+
     $type: "bridge" | "dvs" | "hw_veb" | "hyperv" | "ovs" | "tap" | "vhostuser" | "vif" | "phy"
 
 
     check:
         mtu <= 9000 if mtu not in [None, Undefined]
+        len(name) <= 15 if name not in [None, Undefined]
+        _regex_match(str(name), r"^[a-zA-Z][a-zA-Z0-9._-]*$") if name
 
 
 schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksEthernetsItems0MacAddress:
@@ -595,6 +615,10 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksV
         mac address
     mtu : int, default is 1500, optional
         MTU is the MTU of the interface
+    name : str, default is Undefined, optional
+        Name is the interface name to be used by cloud-init. When combined with
+        MACAddress, cloud-init will rename the interface matching the MAC to this name.
+        When MACAddress is omitted, cloud-init will use this name directly.
     vlanID : int, default is Undefined, required
         VlanID is the Vlan ID
     vlanLink : str, default is Undefined, required
@@ -608,6 +632,8 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksV
 
     mtu?: int = 1500
 
+    name?: str
+
     vlanID: int
 
     vlanLink: str
@@ -615,6 +641,8 @@ schema InfrastructureClusterxK8sIoV1beta1Metal3DataTemplateSpecNetworkDataLinksV
 
     check:
         mtu <= 9000 if mtu not in [None, Undefined]
+        len(name) <= 15 if name not in [None, Undefined]
+        _regex_match(str(name), r"^[a-zA-Z][a-zA-Z0-9._-]*$") if name
         vlanID <= 4096
 
 
